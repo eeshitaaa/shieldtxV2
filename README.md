@@ -12,6 +12,18 @@ python3 -m http.server 4197 --directory dist
 
 Open http://localhost:4197/ in your browser. Any static host can serve the `dist` directory.
 
+## Deployment
+
+[Live website](https://eeshitaaa.github.io/shieldtxx/)
+
+GitHub Pages serves the `codex/github-pages` branch, generated from `dist`. To publish future changes, commit them on `main`, push `main`, then run:
+
+```sh
+git subtree push --prefix dist origin codex/github-pages
+```
+
+GitHub automatically publishes updates pushed to that deployment branch.
+
 ## Project files
 
 - `dist/index.html` — page content, navigation, FAQ and wallet exposure scan dialog.
