@@ -78,3 +78,6 @@
 .button.scan-open:hover,.button.scan-open:focus-visible{
  background:#fff;border-color:#fff;color:var(--blue);
 }
+
+/* Keep the remaining footer navigation aligned after removing the motion switch. */
+.bottom-line{justify-content:flex-end}
