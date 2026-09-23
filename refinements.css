@@ -1,0 +1,80 @@
+.geo{width:100%;height:auto;max-height:205px;stroke:#d3e9ff;stroke-width:1;stroke-linejoin:round;color:#e8f8ff}.geo text{font:9px monospace;letter-spacing:1.1px;fill:#c2dcff;stroke:none;text-anchor:middle}.geo .fresh-frame.one{opacity:.45}.geo .fresh-frame.two{opacity:.65}.geo .fresh-frame path{fill:var(--blue)}.geo .order-packet{fill:var(--blue)}.geo .seal-check{stroke-width:1.6}.feature.active .separate-a{animation:separate-left 6s ease-in-out infinite}.feature.active .separate-b{animation:separate-right 6s ease-in-out infinite}.feature.active .broken-link{animation:fade-link 6s ease-in-out infinite}.feature.active .order-packet{animation:order-slide 5s ease-in-out infinite}.feature.active .fresh-frame.three{animation:fresh-rise 6s ease-in-out infinite}.feature.active .seal-dot{transform-origin:130px 95px;animation:seal-turn 14s linear infinite}@keyframes separate-left{50%{transform:translateX(-6px)}}@keyframes separate-right{50%{transform:translateX(6px)}}@keyframes fade-link{40%,65%{opacity:.12}}@keyframes order-slide{0%,100%{transform:translateX(-9px);opacity:.35}50%{transform:translateX(0);opacity:1}85%{transform:translateX(9px);opacity:.35}}@keyframes fresh-rise{50%{transform:translateY(-7px)}}@keyframes seal-turn{to{transform:rotate(360deg)}}
+/* Scoped variant: no changes to the approved page's layout or architectural model. */
+.feature-art.geometric-art svg{width:100%;height:100%;max-width:230px;stroke-width:1;overflow:visible}
+.geo .back-edge{opacity:.4}.geo text{font-size:9px}
+.motion-off .geo *{animation:none!important}
+.diagram-art .flow-object{stroke:#edf6ff;stroke-width:1.1;stroke-linejoin:round;overflow:visible;width:125px;height:125px}
+.diagram-art .execution{width:147px;height:125px}
+.wallet-back{fill:var(--blue)}.wallet-face{fill:var(--blue)}.wallet-lip,.flow-object .back-edge{opacity:.4}
+.wallet-flap{transform-box:fill-box;transform-origin:50% 100%}.wallet-clasp{transform-box:fill-box;transform-origin:100% 50%}
+.execution text{stroke:none;fill:#edf6ff;font:14px DM,Arial,sans-serif}.execution-check{stroke:#9cffee;stroke-width:1.5}
+.transfer-layer{position:absolute;inset:0;width:100%;height:100%;z-index:4;overflow:visible;pointer-events:none}
+#flow-dollar{opacity:0}#flow-dollar text{fill:#b1fff5;stroke:#edffff;stroke-width:.35;font:38px Georgia,serif;text-anchor:middle;dominant-baseline:middle}#flow-dollar .dollar-depth{fill:#188acb;stroke:#71c5ec}
+.routes>g{stroke-width:1.6}.replay-flow{display:block;align-self:center;margin:0 auto 20px;padding:5px 3px;background:transparent;border:0;border-bottom:1px solid #ffffff60;color:var(--muted);font-size:12px;min-height:32px}
+@media(max-width:760px){.diagram-art .flow-object{width:83px;height:90px}.diagram-art .execution{width:96px;height:90px}#flow-dollar text{font-size:28px}.routes{display:block}.flow-node:after{display:none!important}.replay-flow{margin-bottom:18px}.transfer-layer{overflow:visible}}
+
+/* Motion refinement: labels track the object without obscuring it. */
+.edge-label,.edge-label.exposed{left:var(--orb-x,50%)!important;top:calc(var(--orb-y,50%) + 43px)!important;transform:translateX(-50%);background:transparent;padding:0}
+.edge-label:before,.edge-label.exposed:before{display:none}
+.account-history{opacity:0;fill:var(--blue)}.account-current{fill:var(--blue)}
+.account-number{fill:#d9f1ff;stroke:none;font:9px monospace;text-anchor:middle;letter-spacing:.8px}
+.chart-trace{stroke:#9effef;stroke-width:1.4;stroke-linejoin:round}.candles{stroke:#e3f5ff}.monitor-screen{fill:var(--blue)}
+.feature.active .separate-a{animation:plates-left 7s ease-in-out infinite}
+.feature.active .separate-b{animation:plates-right 7s ease-in-out infinite}
+.feature.active .broken-link{animation:unlink 7s ease-in-out infinite}
+@keyframes plates-left{0%,12%{transform:translateX(44px);opacity:1}52%,84%{transform:translateX(-5px);opacity:1}94%,100%{transform:translateX(-5px);opacity:0}}
+@keyframes plates-right{0%,12%{transform:translateX(-44px);opacity:1}52%,84%{transform:translateX(5px);opacity:1}94%,100%{transform:translateX(5px);opacity:0}}
+@keyframes unlink{0%,15%{opacity:.8}50%,100%{opacity:0}}
+.feature.active .fresh-frame.one{animation:wallet-first 7s ease-in-out infinite}
+.feature.active .fresh-frame.two{animation:wallet-second 7s ease-in-out infinite}
+.feature.active .fresh-frame.three{animation:wallet-third 7s ease-in-out infinite}
+@keyframes wallet-first{0%{opacity:0;transform:translateY(17px)}15%,80%{opacity:.5;transform:translateY(0)}95%,100%{opacity:0;transform:translateY(-7px)}}
+@keyframes wallet-second{0%,20%{opacity:0;transform:translateY(17px)}35%,80%{opacity:.72;transform:translateY(0)}95%,100%{opacity:0;transform:translateY(-7px)}}
+@keyframes wallet-third{0%,40%{opacity:0;transform:translateY(17px)}55%,80%{opacity:1;transform:translateY(0)}95%,100%{opacity:0;transform:translateY(-7px)}}
+@media(max-width:760px){.edge-label,.edge-label.exposed{top:calc(var(--orb-y,50%) + 31px)!important}.diagram-art #fresh-wallet{width:95px;height:104px}}
+
+/* Independent dollar travel, with the problem orbit revealed only at rest. */
+.visual-track{top:0;bottom:0;z-index:4}.visual-stage{position:absolute;top:55px;will-change:transform}
+.visual-stage:before{content:'';position:absolute;left:var(--orb-x,50%);top:var(--orb-y,50%);width:110px;height:125px;transform:translate(-50%,-50%);background:radial-gradient(ellipse,var(--blue) 22%,#004fefe0 40%,#004fef00 72%);opacity:var(--transit-clearance,0);pointer-events:none}
+.ball-orbit{transition:opacity .55s ease}
+.stack-wallet{fill:var(--blue);stroke:#d3e9ff;stroke-width:1}
+.closing.motion-visible .ring-one{animation:api-orbit-one 24s linear infinite}
+.closing.motion-visible .ring-two{animation:api-orbit-two 31s linear infinite}
+.closing.motion-visible .ring-three{animation:api-orbit-three 15s ease-in-out infinite}
+.geo-ring:after{content:'';position:absolute;top:50%;left:-2px;width:3px;height:3px;background:#b1e4ff;border-radius:50%;opacity:.55}
+@keyframes api-orbit-one{from{transform:rotate(27deg)}to{transform:rotate(387deg)}}
+@keyframes api-orbit-two{from{transform:rotate(-27deg)}to{transform:rotate(-387deg)}}
+@keyframes api-orbit-three{0%,100%{transform:translateY(-8px) rotate(0)}50%{transform:translateY(8px) rotate(12deg)}}
+.motion-off .geo-ring{animation:none!important}.motion-off .ball-orbit{transition:none}
+@media(max-width:760px){.visual-track{position:absolute;top:0;bottom:0;height:auto}.visual-stage{position:absolute;left:0;width:100%}.visual-stage:before{width:76px;height:87px}}
+
+/* A shared, gently eased palette transition for all four product cards. */
+.feature{transition:background-color .65s cubic-bezier(.22,1,.36,1),color .65s cubic-bezier(.22,1,.36,1)}
+.feature h3,.feature p,.feature .geo,.feature .geo text,.feature .stack-wallet,.feature .order-packet{transition:color .65s cubic-bezier(.22,1,.36,1),stroke .65s cubic-bezier(.22,1,.36,1),fill .65s cubic-bezier(.22,1,.36,1)}
+@media(hover:hover){
+ .feature:hover{background:#fff;color:var(--blue)}
+ .feature:hover h3,.feature:hover p{color:var(--blue)}
+ .feature:hover .geo,.feature:hover .stack-wallet{stroke:var(--blue);color:var(--blue)}
+ .feature:hover .geo text{fill:var(--blue)}
+ .feature:hover .stack-wallet,.feature:hover .order-packet{fill:#fff}
+}
+@media(prefers-reduced-motion:reduce){.feature,.feature *{transition:none!important}}
+/* More scroll distance for the complete first trade, with unchanged section layout. */
+@media(min-width:761px){.has-motion .solution-story{height:calc(100svh + 1050px)}}
+
+/* Returning visitors pass through the trade section without a pinned scroll runway. */
+.has-motion .solution-story.flow-released{height:auto}
+.has-motion .flow-released .solution-inner{position:relative;top:auto}
+.api-geometry>span,.api-geometry>b{transition:background-color .55s cubic-bezier(.22,1,.36,1),color .55s cubic-bezier(.22,1,.36,1),border-color .55s cubic-bezier(.22,1,.36,1)}
+@media(hover:hover){
+ .api-geometry>span:hover,.api-geometry>b:hover{background:#fff;color:var(--blue);border-color:#fff}
+}
+@media(prefers-reduced-motion:reduce){.api-geometry>span,.api-geometry>b{transition:none}}
+
+/* Keep the primary calls to action in the white-and-blue palette. */
+.hero .button.solid:hover,.hero .button.solid:focus-visible,
+.api-copy .button.solid:hover,.api-copy .button.solid:focus-visible,
+.header .button:hover,.header .button:focus-visible,
+.button.scan-open:hover,.button.scan-open:focus-visible{
+ background:#fff;border-color:#fff;color:var(--blue);
+}
