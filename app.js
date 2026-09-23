@@ -17,7 +17,6 @@ function setup(){
  if(context)context.revert();flowTimeline?.kill();looping=false;manualPaused=false;tradeNumber=1;firstTradeComplete=flowReleased;scrollDriver=null;solutionTrigger=null;activeStep=-1;
  const desktop=innerWidth>760, enabled=!reduced()&&window.gsap&&window.ScrollTrigger;
  document.documentElement.classList.toggle('motion-off',!enabled);document.body.classList.toggle('has-motion',!!enabled&&desktop);
- $('#motion-toggle').setAttribute('aria-pressed',String(!enabled));$('#motion-toggle').innerHTML=`Motion ${enabled?'on':'off'} <span aria-hidden="true">◎</span>`;
  const hero=$('.hero'),problem=$('.problem'),stage=$('.visual-stage'),institutionStage=$('.institution-stage');
  institutionStage.style.top='';
  stage.style.top='';stage.style.transform='';stage.style.translate='';stage.style.rotate='';stage.style.scale='';stage.style.opacity='';problem.style.minHeight='';
@@ -197,7 +196,7 @@ $$('.scan-open').forEach(b=>b.addEventListener('click',()=>{scanOpener=b;dialog.
 $('.scan-close').addEventListener('click',closeScan);dialog.addEventListener('cancel',e=>{e.preventDefault();closeScan();});dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeScan();}});
 $('#scan-form').addEventListener('submit',e=>{e.preventDefault();const input=$('#wallet-address'),value=input.value.trim(),err=$('#scan-error');if(!/^0x[a-fA-F0-9]{40}$/.test(value)){err.textContent='Enter a valid public wallet address: 0x followed by 40 hexadecimal characters.';err.hidden=false;input.setAttribute('aria-invalid','true');input.focus();return;}err.hidden=true;input.removeAttribute('aria-invalid');window.open(`https://scanner.shieldtx.xyz/#scan/${encodeURIComponent(value.toLowerCase())}`,'_blank','noopener,noreferrer');});
 $('#wallet-address').addEventListener('input',()=>{$('#scan-error').hidden=true;$('#wallet-address').removeAttribute('aria-invalid');});
-$('#motion-toggle').addEventListener('click',()=>{motionChoice=!reduced();setup();});reducedPreference.addEventListener('change',setup);
+reducedPreference.addEventListener('change',setup);
 let lastWidth=innerWidth,lastHeight=innerHeight;window.addEventListener('resize',()=>{if(Math.abs(lastWidth-innerWidth)<2&&(innerWidth<=760||Math.abs(lastHeight-innerHeight)<2))return;lastWidth=innerWidth;lastHeight=innerHeight;clearTimeout(resizeTimer);resizeTimer=setTimeout(setup,180);});
 setup();
 document.fonts.ready.then(setup);

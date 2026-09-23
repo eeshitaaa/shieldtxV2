@@ -3,7 +3,13 @@
 if(!window.THREE)return;
 const T=window.THREE, views=[];
 const rayLabels=['Copy bots','Media desks','Wallet tracking','PnL scrutiny','Position watchers','Strategy mirroring','Liquidation alerts','Reputation exposure'];
-const rayOrigins=[[82,165],[522,348],[394,88],[93,488],[526,198],[65,325],[390,524],[214,88]];
+// Anchor every threat to the same outer orbit, preserving its approach angle.
+const orbitCircle=document.querySelector('.ball-orbit circle');
+const orbit={x:+orbitCircle.getAttribute('cx'),y:+orbitCircle.getAttribute('cy'),r:+orbitCircle.getAttribute('r')};
+const rayOrigins=[[82,165],[522,348],[394,88],[93,488],[526,198],[65,325],[390,524],[214,88]].map(([x,y])=>{
+ const angle=Math.atan2(y-orbit.y,x-orbit.x);
+ return [orbit.x+orbit.r*Math.cos(angle),orbit.y+orbit.r*Math.sin(angle)];
+});
 let rayStart=null, rayElements=[];
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 function institution(){
@@ -46,7 +52,7 @@ function initRays(){
  const svg=document.querySelector('.attack-rays');svg.replaceChildren();svg.setAttribute('viewBox','0 0 600 600');svg.setAttribute('preserveAspectRatio','xMidYMid meet');
  const ns='http://www.w3.org/2000/svg';
  const el=(tag,attrs)=>{const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);return n;};
- rayElements=rayLabels.map((label,i)=>{const [x,y]=rayOrigins[i],g=el('g',{'class':'threat-ray','opacity':0});const path=el('path',{fill:'none',stroke:'#d7e9ff','stroke-width':1.1});const dot=el('circle',{r:2.4,fill:'#ffffff'});const text=el('text',{x,y:y-12,fill:'#edf6ff','text-anchor':x>480?'end':x<110?'start':'middle'});text.textContent=label.toUpperCase();g.append(path,dot,text);svg.append(g);return{g,path,dot,text,x,y};});
+ rayElements=rayLabels.map((label,i)=>{const [x,y]=rayOrigins[i],g=el('g',{'class':'threat-ray','opacity':0});const path=el('path',{d:`M${x} ${y}L${x} ${y}`,fill:'none',stroke:'#d7e9ff','stroke-width':1.1});const dot=el('circle',{r:2.4,fill:'#ffffff'});const text=el('text',{x,y:y-12,fill:'#edf6ff','text-anchor':x>480?'end':x<110?'start':'middle'});text.textContent=label.toUpperCase();g.append(path,dot,text);svg.append(g);return{g,path,dot,text,x,y};});
 }
 function rays(v,time,cx,cy){
  const svg=document.querySelector('.attack-rays'),ready=v.phase>=.998;
