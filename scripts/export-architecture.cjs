@@ -1,0 +1,12 @@
+const fs=require('fs'),T=require('three'),vm=require('vm');
+const source=fs.readFileSync(__dirname+'/../dist/architecture.js','utf8');
+const fn=source.slice(source.indexOf('function institution(){'),source.indexOf('window.createInstitution'));
+const sandbox={T};vm.createContext(sandbox);vm.runInContext(fn+';this.model=institution();',sandbox);
+const root=sandbox.model;root.updateMatrixWorld(true);
+const camera=new T.OrthographicCamera(-4.35,4.35,3.6,-3.6,.1,100);camera.position.set(2.8,5.3,30);camera.lookAt(0,2.8,0);camera.updateProjectionMatrix();camera.updateMatrixWorld(true);
+const meshes=[];root.traverse(o=>{if(o.isMesh)meshes.push(o)});
+const ray=new T.Raycaster(),v1=new T.Vector3(),v2=new T.Vector3(),mid=new T.Vector3(),dir=new T.Vector3();let lines=[];
+root.traverse(o=>{if(!o.isLine)return;const a=o.geometry.attributes.position;for(let i=0;i<a.count-1;i+=o.isLineSegments?2:1){v1.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld);v2.fromBufferAttribute(a,i+1).applyMatrix4(o.matrixWorld);mid.copy(v1).add(v2).multiplyScalar(.5);dir.copy(mid).sub(camera.position);let dist=dir.length();ray.set(camera.position,dir.normalize());let hits=ray.intersectObjects(meshes,false);if(hits.some(h=>h.distance<dist-.025))continue;let u=v1.clone().project(camera),v=v2.clone().project(camera);const x=n=>((n+1)*300).toFixed(2),y=n=>((1-n)*250).toFixed(2);lines.push(`<path d="M${x(u.x)} ${y(u.y)}L${x(v.x)} ${y(v.y)}" opacity="${o.material.opacity}"/>`);}});
+const label=new T.Vector3(0,4.20,1.075).project(camera);
+fs.writeFileSync(__dirname+'/../dist/assets/institution.svg',`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 600 500"><g fill="none" stroke="white" stroke-width=".85" stroke-linecap="round">${lines.join('')}</g><text x="${((label.x+1)*300).toFixed(2)}" y="${((1-label.y)*250+4).toFixed(2)}" fill="white" font-family="Arial" font-size="12" text-anchor="middle" letter-spacing="2">SHIELDTX</text></svg>`);
+console.log('Exported '+lines.length+' projected architecture edges.');
