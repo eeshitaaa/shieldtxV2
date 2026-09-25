@@ -196,6 +196,8 @@ const featureObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.tar
 const ringObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('motion-visible',e.isIntersecting)),{threshold:.1});ringObserver.observe($('.closing'));
 $('.menu-toggle').addEventListener('click',()=>{const open=$('#navigation').classList.toggle('open');$('.menu-toggle').setAttribute('aria-expanded',String(open));$('.menu-toggle').setAttribute('aria-label',open?'Close menu':'Open menu');});
 $$('#navigation a').forEach(link=>link.addEventListener('click',()=>{$('#navigation').classList.remove('open');$('.menu-toggle').setAttribute('aria-expanded','false');$('.menu-toggle').setAttribute('aria-label','Open menu');}));
+const scannerObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('scan-revealed');scannerObserver.unobserve(e.target);}}),{threshold:.5});
+scannerObserver.observe($('.scanner-callout'));
 const dialog=$('#scan-dialog');let scanOpener;
 function closeScan(){dialog.close();document.body.classList.remove('no-scroll');scanOpener?.focus();}
 $$('.scan-open').forEach(b=>b.addEventListener('click',()=>{scanOpener=b;dialog.showModal();document.body.classList.add('no-scroll');$('#wallet-address').focus();}));

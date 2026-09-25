@@ -60,12 +60,16 @@ function rays(v,time,cx,cy){
  if(!ready){rayStart=null;rayElements.forEach(r=>r.g.setAttribute('opacity','0'));return;}
  if(rayStart===null)rayStart=time;
  const quiet=document.documentElement.classList.contains('motion-off');
+ // A fixed screen-space clearance encloses the coin at every rotation.
+ const boundaryRadius=.50/(v.camera.right-v.camera.left)*600+12;
+ svg.dataset.clearanceRadius=boundaryRadius.toFixed(3);
+ svg.dataset.centerX=cx.toFixed(3);svg.dataset.centerY=cy.toFixed(3);
  const seconds=(time-rayStart)/1000;
  rayElements.forEach((r,i)=>{
   const age=(seconds-i*.88)%7.04,live=quiet?i<4:age>=0&&age<2.30;
   if(!live){r.g.setAttribute('opacity','0');return;}
   const f=quiet?1:clamp(age/1.75),alpha=quiet?.7:clamp(age/.22)*clamp((2.30-age)/.45);
-  const dx=cx-r.x,dy=cy-r.y,len=Math.hypot(dx,dy),endX=cx-dx/len*29,endY=cy-dy/len*29;
+  const dx=cx-r.x,dy=cy-r.y,len=Math.hypot(dx,dy),stopRadius=boundaryRadius+2.4,endX=cx-dx/len*stopRadius,endY=cy-dy/len*stopRadius;
   const px=r.x+(endX-r.x)*f,py=r.y+(endY-r.y)*f;
   r.path.setAttribute('d',`M${r.x} ${r.y}L${px} ${py}`);r.dot.setAttribute('cx',px);r.dot.setAttribute('cy',py);r.g.setAttribute('opacity',alpha.toFixed(3));
  });

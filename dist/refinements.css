@@ -144,3 +144,30 @@
 @media(min-width:761px) and (max-width:1100px){
  .problem-rows>div{grid-template-columns:100px 10px minmax(0,1fr)}
 }
+
+/* The exposure scan is a clear next step, revealed once as it enters view. */
+.problem-bottom.scanner-callout{background:#f8fbff;color:var(--blue);padding:24px var(--gutter);gap:24px;overflow:hidden;border-top-color:#fff}
+.scanner-intro{display:flex;align-items:center;gap:22px;min-width:0}
+.scanner-mark{width:60px;height:60px;flex:none;stroke:currentColor;stroke-width:1;overflow:visible}
+.scanner-mark>circle{opacity:.35}.scanner-mark>path{opacity:.5}
+.scanner-kicker{display:block;font:10px/1.5 monospace;letter-spacing:.15em;margin-bottom:6px}
+.scanner-copy h3{font:400 clamp(23px,2.1vw,30px)/1.2 'Times New Roman',Georgia,serif;letter-spacing:-.025em;margin:0 0 7px}
+.problem-bottom .scanner-copy p{font:12px/1.5 DM,Arial,sans-serif;color:#335ba9;max-width:none}
+.scanner-callout .button.scan-open{background:var(--blue);color:white;border-color:var(--blue);flex-shrink:0;transition:background .3s,color .3s,transform .3s}
+.scanner-callout .button.scan-open:hover,.scanner-callout .button.scan-open:focus-visible{background:white;color:var(--blue);border-color:var(--blue)}
+.scanner-callout:after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--blue);transform:scaleX(0);transform-origin:left}
+.scan-revealed:after{animation:scanner-line 1.3s cubic-bezier(.22,1,.36,1) both}
+.scan-revealed .scanner-copy,.scan-revealed .scan-open{animation:scanner-enter .8s cubic-bezier(.22,1,.36,1) both}
+.scan-revealed .scan-open{animation-delay:.12s}
+.scanner-sweep{transform-origin:32px 32px}
+.scan-revealed .scanner-sweep{animation:scanner-turn 2.4s ease-in-out 2}
+@keyframes scanner-line{to{transform:scaleX(1)}}
+@keyframes scanner-enter{from{opacity:.45;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scanner-turn{from{transform:rotate(-45deg)}to{transform:rotate(315deg)}}
+@media(max-width:760px){
+ .problem-bottom.scanner-callout{padding:22px 20px;gap:18px;align-items:stretch}
+ .scanner-intro{gap:14px}.scanner-mark{width:44px;height:44px}
+ .scanner-copy h3{font-size:23px}.problem-bottom .scanner-copy p{font-size:11px}
+ .scanner-callout .button.scan-open{width:100%;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.scanner-callout *,.scanner-callout:after{animation:none!important}.scanner-callout:after{transform:scaleX(1)}}
