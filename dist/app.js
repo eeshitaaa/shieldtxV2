@@ -23,8 +23,10 @@ function setup(){
  // The institution stays hero-anchored; the separate dollar layer travels continuously.
  let heroTop=55,problemTop=0;
  if(desktop){
-   heroTop=institutionStage.offsetTop;
-   const artHeight=stage.getBoundingClientRect().height,bottom=$('.problem-bottom').offsetHeight;
+   const artHeight=stage.getBoundingClientRect().height;
+   heroTop=Math.max(24,(hero.offsetHeight-artHeight)/2);
+   institutionStage.style.top=`${heroTop}px`;
+   const bottom=$('.problem-bottom').offsetHeight;
    problemTop=problem.offsetTop+Math.max(12,(problem.offsetHeight-bottom-artHeight)/2);
  }else{
    const artHeight=stage.getBoundingClientRect().height;heroTop=hero.offsetHeight-artHeight-66;institutionStage.style.top=`${heroTop}px`;

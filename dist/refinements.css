@@ -88,3 +88,50 @@
 .flow-coin .coin-rim{fill:none;stroke:#fff;stroke-width:.5}
 #flow-dollar .flow-coin text{fill:var(--blue);stroke:#fff;stroke-width:.55;font-family:DM,Arial,sans-serif;font-weight:600;font-size:28px}
 @media(max-width:760px){.flow-coin{transform:scale(.8)}}
+
+/* Keep the opening composition centered and the navigation close to the top. */
+.header{margin-top:10px}
+@media(min-width:761px){
+ .hero{--hero-gap:clamp(28px,3vw,48px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--hero-gap);align-items:center;min-height:calc(100svh - var(--header) - 66px);padding:58px var(--gutter)}
+ .hero .narrative-copy{width:100%;min-width:0;grid-column:1}
+ .institution-stage,.visual-track{right:calc(var(--gutter) + 1px);width:calc((100% - 2 * var(--gutter) - clamp(28px,3vw,48px) - 2px)/2)}
+ .institution-stage,.visual-stage{max-height:none}
+ .hero h1{font-size:clamp(43px,4.1vw,65px);line-height:1.08;letter-spacing:-.04em;margin:18px 0 24px}
+ .hero-subtitle{font-size:clamp(29px,2.55vw,39px);max-width:560px;margin-bottom:24px}
+ .hero-description{max-width:490px;line-height:1.6}
+ .hero-meta{margin-top:40px}
+}
+@media(max-width:760px){
+ .header{margin-top:8px}
+ .hero h1 br{display:none}
+}
+
+/* Two clear actions: filled API access and an outlined trading entry. */
+.hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hero-actions .trading-button{background:transparent;color:var(--ink);border-color:#d8ecff80}
+.hero-actions .trading-button:hover,.hero-actions .trading-button:focus-visible{background:#ffffff12;border-color:#fff;color:#fff}
+@media(max-width:760px){
+ .hero-actions{gap:10px}
+ .hero-actions .button{padding:12px 12px;gap:8px;font-size:12px}
+}
+
+/* The hero has the same external breathing room on both sides. */
+.journey{--journey-gap:28px}
+.journey>.hero,.journey>.problem{margin-top:var(--journey-gap)}
+@media(max-width:760px){.journey{--journey-gap:20px}}
+
+/* One spacing rhythm from navigation through the footer. */
+:root{--section-gap:28px}
+.journey{--journey-gap:var(--section-gap)}
+.journey>.hero,.journey>.problem,
+.solution-story,.product,.closing,.faq-section,.site-footer{margin-top:var(--section-gap)}
+.hero .button.api-access:hover,.hero .button.api-access:focus-visible,
+.api-copy .button.api-access:hover,.api-copy .button.api-access:focus-visible,
+.header .button.api-access:hover,.header .button.api-access:focus-visible{
+ background:var(--blue);border-color:#fff;color:#fff;
+}
+.hero-actions .trading-button:hover,.hero-actions .trading-button:focus-visible{
+ background:#fff;border-color:#fff;color:var(--blue);
+}
+@media(max-width:760px){:root{--section-gap:20px}}
+
