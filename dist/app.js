@@ -236,9 +236,9 @@ addEventListener('scroll',()=>{if(scrollY<previousScrollY-2)releaseFlowRunway?.(
 const featureObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('active',e.isIntersecting)),{threshold:.2});$$('.feature').forEach(el=>featureObserver.observe(el));
 const ringObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('motion-visible',e.isIntersecting)),{threshold:.1});ringObserver.observe($('.closing'));
 $('.menu-toggle').addEventListener('click',()=>{const open=$('#navigation').classList.toggle('open');$('.menu-toggle').setAttribute('aria-expanded',String(open));$('.menu-toggle').setAttribute('aria-label',open?'Close menu':'Open menu');});
-$$('#navigation a').forEach(link=>link.addEventListener('click',()=>{$('#navigation').classList.remove('open');$('.menu-toggle').setAttribute('aria-expanded','false');$('.menu-toggle').setAttribute('aria-label','Open menu');}));
+$$('#navigation a,#navigation button').forEach(link=>link.addEventListener('click',()=>{$('#navigation').classList.remove('open');$('.menu-toggle').setAttribute('aria-expanded','false');$('.menu-toggle').setAttribute('aria-label','Open menu');}));
 const dialog=$('#scan-dialog');let scanOpener;
-function closeScan(){dialog.close();document.body.classList.remove('no-scroll');scanOpener?.focus();}
+function closeScan(){dialog.close();document.body.classList.remove('no-scroll');if(scanOpener?.getClientRects().length)scanOpener.focus();else if(scanOpener?.closest('#navigation'))$('.menu-toggle').focus();}
 $$('.scan-open').forEach(b=>b.addEventListener('click',()=>{scanOpener=b;dialog.showModal();document.body.classList.add('no-scroll');$('#wallet-address').focus();}));
 $('.scan-close').addEventListener('click',closeScan);dialog.addEventListener('cancel',e=>{e.preventDefault();closeScan();});dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeScan();}});
 reducedPreference.addEventListener('change',setup);
