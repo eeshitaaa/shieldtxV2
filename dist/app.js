@@ -62,7 +62,7 @@ function setup(){
    const scanner=$('.scanner-callout'),border=$('.scanner-border'),edge=$('.scanner-light');
    const sw=scanner.clientWidth,sh=scanner.clientHeight;
    border.setAttribute('viewBox',`0 0 ${sw} ${sh}`);
-   edge.setAttribute('d',`M1 1H${sw-7}Q${sw-1} 1 ${sw-1} 7V${sh-1}`);
+   edge.setAttribute('d',`M1 1H${sw-1}`);
    const borderLength=edge.getTotalLength(),beam=Math.min(100,sw*.16);
    edge.setAttribute('stroke-dasharray',`${beam} ${borderLength+beam}`);
    if(enabled){
