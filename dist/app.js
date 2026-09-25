@@ -28,8 +28,8 @@ function setup(){
    institutionStage.style.top=`${heroTop}px`;
    const bottom=$('.problem-bottom').offsetHeight,copy=$('.problem .narrative-copy');
    // Reserve a separate scanner row; center text and orbit in the same upper area.
-   problem.style.paddingTop='40px';problem.style.paddingBottom=`${bottom+40}px`;
-   problem.style.minHeight=`${Math.max(artHeight,copy.offsetHeight)+bottom+82}px`;
+   problem.style.paddingTop='24px';problem.style.paddingBottom=`${bottom+24}px`;
+   problem.style.minHeight=`${Math.max(artHeight*.9,copy.offsetHeight)+bottom+50}px`;
    problemTop=problem.offsetTop+1+(problem.offsetHeight-2-bottom-artHeight)/2;
  }else{
    const artHeight=stage.getBoundingClientRect().height;heroTop=hero.offsetHeight-artHeight-66;institutionStage.style.top=`${heroTop}px`;
@@ -59,6 +59,14 @@ function setup(){
  }
  
  context=gsap.context(()=>{
+   const scanner=$('.scanner-callout'),border=$('.scanner-border'),edge=$('.scanner-border rect');
+   border.setAttribute('viewBox',`0 0 ${scanner.clientWidth} ${scanner.clientHeight}`);
+   edge.setAttribute('width',scanner.clientWidth-2);edge.setAttribute('height',scanner.clientHeight-2);
+   if(enabled){
+     // Tie a full circuit of the callout perimeter to scroll in both directions.
+     gsap.fromTo(edge,{strokeDashoffset:0},{strokeDashoffset:-100,ease:'none',scrollTrigger:{trigger:scanner,start:'top 95%',end:'bottom 20%',scrub:.45,invalidateOnRefresh:true}});
+   }
+
    const phase={value:0};
    const placeDollarStage=()=>{
      const p=phase.value,ease=p*p*(3-2*p);
@@ -196,8 +204,6 @@ const featureObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.tar
 const ringObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('motion-visible',e.isIntersecting)),{threshold:.1});ringObserver.observe($('.closing'));
 $('.menu-toggle').addEventListener('click',()=>{const open=$('#navigation').classList.toggle('open');$('.menu-toggle').setAttribute('aria-expanded',String(open));$('.menu-toggle').setAttribute('aria-label',open?'Close menu':'Open menu');});
 $$('#navigation a').forEach(link=>link.addEventListener('click',()=>{$('#navigation').classList.remove('open');$('.menu-toggle').setAttribute('aria-expanded','false');$('.menu-toggle').setAttribute('aria-label','Open menu');}));
-const scannerObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('scan-revealed');scannerObserver.unobserve(e.target);}}),{threshold:.5});
-scannerObserver.observe($('.scanner-callout'));
 const dialog=$('#scan-dialog');let scanOpener;
 function closeScan(){dialog.close();document.body.classList.remove('no-scroll');scanOpener?.focus();}
 $$('.scan-open').forEach(b=>b.addEventListener('click',()=>{scanOpener=b;dialog.showModal();document.body.classList.add('no-scroll');$('#wallet-address').focus();}));
