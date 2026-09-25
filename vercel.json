@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/scanner-preview",
+      "destination": "https://www.shieldtx.xyz/api/scanner-preview"
+    }
+  ]
+}

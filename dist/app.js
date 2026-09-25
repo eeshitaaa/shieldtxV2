@@ -227,8 +227,6 @@ const dialog=$('#scan-dialog');let scanOpener;
 function closeScan(){dialog.close();document.body.classList.remove('no-scroll');scanOpener?.focus();}
 $$('.scan-open').forEach(b=>b.addEventListener('click',()=>{scanOpener=b;dialog.showModal();document.body.classList.add('no-scroll');$('#wallet-address').focus();}));
 $('.scan-close').addEventListener('click',closeScan);dialog.addEventListener('cancel',e=>{e.preventDefault();closeScan();});dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeScan();}});
-$('#scan-form').addEventListener('submit',e=>{e.preventDefault();const input=$('#wallet-address'),value=input.value.trim(),err=$('#scan-error');if(!/^0x[a-fA-F0-9]{40}$/.test(value)){err.textContent='Enter a valid public wallet address: 0x followed by 40 hexadecimal characters.';err.hidden=false;input.setAttribute('aria-invalid','true');input.focus();return;}err.hidden=true;input.removeAttribute('aria-invalid');window.open(`https://scanner.shieldtx.xyz/#scan/${encodeURIComponent(value.toLowerCase())}`,'_blank','noopener,noreferrer');});
-$('#wallet-address').addEventListener('input',()=>{$('#scan-error').hidden=true;$('#wallet-address').removeAttribute('aria-invalid');});
 reducedPreference.addEventListener('change',setup);
 let lastWidth=innerWidth,lastHeight=innerHeight;window.addEventListener('resize',()=>{if(Math.abs(lastWidth-innerWidth)<2&&(innerWidth<=760||Math.abs(lastHeight-innerHeight)<2))return;lastWidth=innerWidth;lastHeight=innerHeight;clearTimeout(resizeTimer);resizeTimer=setTimeout(setup,180);});
 setup();

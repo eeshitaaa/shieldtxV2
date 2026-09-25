@@ -57,3 +57,9 @@ This is a front-end design preview. API requests and wallet scans open ShieldTX'
 [Public preview](https://shieldtx-geometry-in-motion.abheek-tripathy.chatgpt.site/)
 
 Exported from the published source commit `410661bfa1d69d64c395482c0e9f0a5c9e6ac9d9`.
+
+## Wallet scanner preview (yappe/coin)
+
+The dialog fetches ShieldTX's public scanner preview via the single external rewrite in `vercel.json`. It validates addresses, displays exposure/activity/coverage, and links to the full official scanner. No wallet connection is requested. Upstream stale and partial-coverage labels remain visible.
+
+Run `python3 scripts/preview.py` for a local preview on http://127.0.0.1:4202 with the same API forwarding route. A plain static server also works: if the API is unavailable, the official sample uses a clearly labelled snapshot captured on 25 September 2026. Other addresses receive an unavailable message and an official scanner link, never sample data.
