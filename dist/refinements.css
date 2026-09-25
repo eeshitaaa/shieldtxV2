@@ -229,3 +229,19 @@
 .scan-results-close:hover,.scan-results-close:focus-visible{background:var(--blue);border-color:white}
 @media(max-width:760px){.scan-result-actions{width:100%;justify-content:space-between}}
 .scan-detail-button{margin-top:20px}
+
+/* Separate section 3's title, illustration, controls and explanation. */
+.solution-inner>h2{margin-bottom:32px}
+.flow-diagram{padding-top:40px;padding-bottom:64px}
+.flow-controls{margin-top:24px}
+.flow-description{margin-top:28px;min-height:64px}
+.solution-inner .truth{padding-top:20px}
+.solution-inner,.has-motion .solution-inner{padding-bottom:40px}
+@media(min-width:761px) and (max-height:820px){.flow-diagram{padding-top:24px}}
+@media(max-width:760px){
+ .solution-inner>h2{margin-bottom:28px}
+ .flow-diagram{padding-top:26px;padding-bottom:50px}
+ .flow-controls{margin-top:20px}
+ .flow-description{margin-top:26px;min-height:85px}
+ .solution-inner,.has-motion .solution-inner{padding-bottom:32px}
+}

@@ -48,13 +48,13 @@ function setup(){
  const paths=$$('.flow-route');
  if(desktop){
  paths.forEach((p,i)=>{const start=points[i].x+(i===1?ar[1].width/2-14:i===0?48:45),end=points[i+1].x-(i===0?ar[1].width/2-14:i===1?45:60);p.setAttribute('d',`M${start} ${points[i].y}H${end}`);});
- const ry=$('.return-caption').getBoundingClientRect().top-fr.top-12;
+ const ry=$('.flow-grid').getBoundingClientRect().bottom-fr.top+30;
  $('.return-route').setAttribute('d',`M${points[3].x+63} ${points[3].y+54}V${ry-10}Q${points[3].x+63} ${ry} ${points[3].x+53} ${ry}H${target.x+10}Q${target.x} ${ry} ${target.x} ${ry-10}V${ry-25}`);
  }else{
  paths[0].setAttribute('d',`M${points[0].x+30} ${points[0].y}H${points[1].x-46}`);
  paths[1].setAttribute('d',`M${points[1].x+48} ${points[1].y+65}H${fr.width-10}V${points[2].y-20}H${points[2].x+38}`);
  paths[2].setAttribute('d',`M${points[2].x-30} ${points[2].y}H${points[3].x+43}`);
- const ry=$('.return-caption').getBoundingClientRect().top-fr.top-12,rx=fr.width-3;
+ const ry=$('.flow-grid').getBoundingClientRect().bottom-fr.top+30,rx=fr.width-3;
  $('.return-route').setAttribute('d',`M${points[3].x} ${points[3].y+62}V${ry-8}Q${points[3].x} ${ry} ${points[3].x+8} ${ry}H${rx-8}Q${rx} ${ry} ${rx} ${ry-8}V${points[1].y+76}Q${rx} ${points[1].y+66} ${rx-10} ${points[1].y+66}H${points[1].x+38}`);
  }
  
