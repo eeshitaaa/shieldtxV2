@@ -19,19 +19,23 @@ function setup(){
  document.documentElement.classList.toggle('motion-off',!enabled);document.body.classList.toggle('has-motion',!!enabled&&desktop);
  const hero=$('.hero'),problem=$('.problem'),stage=$('.visual-stage'),institutionStage=$('.institution-stage');
  institutionStage.style.top='';
- stage.style.top='';stage.style.transform='';stage.style.translate='';stage.style.rotate='';stage.style.scale='';stage.style.opacity='';problem.style.minHeight='';
+ stage.style.top='';stage.style.transform='';stage.style.translate='';stage.style.rotate='';stage.style.scale='';stage.style.opacity='';problem.style.minHeight='';problem.style.paddingTop='';problem.style.paddingBottom='';
  // The institution stays hero-anchored; the separate dollar layer travels continuously.
  let heroTop=55,problemTop=0;
  if(desktop){
    const artHeight=stage.getBoundingClientRect().height;
    heroTop=Math.max(24,(hero.offsetHeight-artHeight)/2);
    institutionStage.style.top=`${heroTop}px`;
-   const bottom=$('.problem-bottom').offsetHeight;
-   problemTop=problem.offsetTop+Math.max(12,(problem.offsetHeight-bottom-artHeight)/2);
+   const bottom=$('.problem-bottom').offsetHeight,copy=$('.problem .narrative-copy');
+   // Reserve a separate scanner row; center text and orbit in the same upper area.
+   problem.style.paddingTop='40px';problem.style.paddingBottom=`${bottom+40}px`;
+   problem.style.minHeight=`${Math.max(artHeight,copy.offsetHeight)+bottom+82}px`;
+   problemTop=problem.offsetTop+1+(problem.offsetHeight-2-bottom-artHeight)/2;
  }else{
    const artHeight=stage.getBoundingClientRect().height;heroTop=hero.offsetHeight-artHeight-66;institutionStage.style.top=`${heroTop}px`;
    const copy=$('.problem .narrative-copy'),copyHeight=copy.offsetHeight,copyTop=copy.offsetTop;
-   problem.style.minHeight=`${copyTop+copyHeight+artHeight+135}px`;problemTop=problem.offsetTop+copyTop+copyHeight+16;
+   const bottom=$('.problem-bottom').offsetHeight;
+   problem.style.minHeight=`${copyTop+copyHeight+artHeight+bottom+40}px`;problemTop=problem.offsetTop+copyTop+copyHeight+16;
  }
  stage.style.top=`${heroTop}px`;
  if(!window.gsap||!window.ScrollTrigger)return;

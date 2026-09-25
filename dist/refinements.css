@@ -135,3 +135,12 @@
 }
 @media(max-width:760px){:root{--section-gap:20px}}
 
+
+/* Align the problem copy to the same columns as the travelling graphic. */
+@media(min-width:761px){
+ .problem .narrative-copy{width:calc((100% - clamp(28px,3vw,48px))/2);min-width:0}
+ .problem-rows>div{grid-template-columns:125px 14px minmax(0,1fr)}
+}
+@media(min-width:761px) and (max-width:1100px){
+ .problem-rows>div{grid-template-columns:100px 10px minmax(0,1fr)}
+}
