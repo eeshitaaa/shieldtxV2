@@ -63,8 +63,10 @@ function setup(){
    border.setAttribute('viewBox',`0 0 ${scanner.clientWidth} ${scanner.clientHeight}`);
    edge.setAttribute('width',scanner.clientWidth-2);edge.setAttribute('height',scanner.clientHeight-2);
    if(enabled){
-     // Tie a full circuit of the callout perimeter to scroll in both directions.
-     gsap.fromTo(edge,{strokeDashoffset:0},{strokeDashoffset:-100,ease:'none',scrollTrigger:{trigger:scanner,start:'top 95%',end:'bottom 20%',scrub:.45,invalidateOnRefresh:true}});
+     // Visibility starts the light; elapsed time drives every circuit, not scroll.
+     const borderLoop=gsap.fromTo(edge,{strokeDashoffset:0},{strokeDashoffset:-100,duration:4.5,repeat:-1,ease:'none',paused:true});
+     const setBorderVisible=self=>{borderLoop.paused(!self.isActive);gsap.set(edge,{opacity:self.isActive?1:0});};
+     ScrollTrigger.create({trigger:scanner,start:'bottom bottom',end:()=>`top ${$('.header').offsetHeight+8}px`,invalidateOnRefresh:true,onToggle:setBorderVisible,onRefresh:setBorderVisible});
    }
 
    const phase={value:0};
