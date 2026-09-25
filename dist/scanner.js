@@ -30,10 +30,15 @@
     $('#scan-source').textContent = '';
     $('#scan-dialog').scrollTo({top:0,behavior:'instant'});
   }
+  const severity = (value, moderateAbove) => value === null ? 'unknown' : value > 70 ? 'high' : value > moderateAbove ? 'moderate' : 'low';
+  function tone(id, value) { $(id).setAttribute('data-severity', value); }
   function render(data, address, capturedAt) {
     const coverage = data.coverage || {}, absent = (coverage.scan || data.state) === 'not_in_dataset';
     const score = !absent && finite(data.privacy_score) ? data.privacy_score : null;
     const pressure = !absent && finite(data.copy_exposure) ? data.copy_exposure : null;
+    const visibilityTone = severity(score, 40), pressureTone = severity(pressure, 30);
+    for (const id of ['#scan-exposure-label','#scan-visibility','#scan-visibility-note','#scan-visibility-meter']) tone(id, visibilityTone);
+    for (const id of ['#scan-pressure','#scan-pressure-note','#scan-pressure-meter']) tone(id, pressureTone);
     text('#scan-visibility', score ?? '—'); text('#scan-pressure', pressure ?? '—');
     $('#scan-visibility-meter').style.width = `${Math.max(0, Math.min(100, score ?? 0))}%`;
     $('#scan-pressure-meter').style.width = `${Math.max(0, Math.min(100, pressure ?? 0))}%`;

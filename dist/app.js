@@ -4,6 +4,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const reducedPreference=matchMedia('(prefers-reduced-motion: reduce)');
 let motionChoice=null, context, resizeTimer, solutionTrigger, activeStep=-1, flowTimeline, tradeNumber=1, setFlowPlaying, firstTradeComplete=false, scrollDriver, flowSeek, displayedStepCopy='';
 let flowReleased=false,releaseFlowRunway;
+let anchorNavigation=null,initialAnchorPending=!!location.hash,initialAnchorFrame=0;
 const TRADE_END=12.2, STEP_TIMES=[1.8,4.4,6.6,10.5];
 const reduced=()=>motionChoice===null?reducedPreference.matches:motionChoice;
 const stepCopy=[
@@ -101,7 +102,7 @@ function setup(){
      // On mobile, the intervening copy occupies the art's lane. Fade while passing it.
      stage.style.opacity=String(desktop?1:p<.2?1-p/.2:p>.8?(p-.8)/.2:0);
    };
-   const paintScene=()=>{institutionStage.style.opacity=String(1-Math.min(1,phase.value/.62));placeDollarStage();window.shieldScene?.setProgress(phase.value);$('.edge-label').classList.toggle('exposed',phase.value>.65);};
+   const paintScene=()=>{institutionStage.style.opacity=String(1-Math.min(1,phase.value/.62));placeDollarStage();window.shieldScene?.setProgress(phase.value);};
    if(enabled){
      gsap.to('.scroll-cue',{autoAlpha:0,ease:'none',scrollTrigger:{trigger:hero,start:'top top',end:'top -100',scrub:true}});
      // Read the journey's actual scroll position on every refresh. Never reuse a
@@ -232,7 +233,60 @@ addEventListener('wheel',e=>{if(e.deltaY<0&&!e.ctrlKey&&reverseAllowed(e.target)
 addEventListener('touchstart',e=>{if(e.touches.length===1)reverseTouchY=e.touches[0].clientY;},{passive:true});
 addEventListener('touchmove',e=>{if(e.touches.length!==1)return;const y=e.touches[0].clientY;if(y>reverseTouchY&&reverseAllowed(e.target))releaseFlowRunway?.();reverseTouchY=y;},{passive:true});
 addEventListener('keydown',e=>{if(reverseAllowed(e.target)&&(['ArrowUp','PageUp','Home'].includes(e.key)||(e.key===' '&&e.shiftKey)))releaseFlowRunway?.();});
-addEventListener('scroll',()=>{if(scrollY<previousScrollY-2)releaseFlowRunway?.();previousScrollY=scrollY;},{passive:true});
+addEventListener('scroll',()=>{if(!anchorNavigation&&scrollY<previousScrollY-2)releaseFlowRunway?.();previousScrollY=scrollY;},{passive:true});
+// Resolve section positions after layout changes rather than relying on a stale
+// native smooth-scroll destination. Explicit user scrolling always takes control.
+function anchorTarget(hash){
+ try{return document.getElementById(decodeURIComponent(hash.slice(1)));}catch{return null;}
+}
+function cancelAnchorNavigation(){
+ if(anchorNavigation)cancelAnimationFrame(anchorNavigation.frame);
+ anchorNavigation=null;
+}
+function navigateToSection(hash,{animate=true,record=true}={}){
+ const target=anchorTarget(hash);if(!target)return;
+ cancelAnchorNavigation();
+ // Collapse the completed trade runway before measuring an upward destination.
+ if(target.getBoundingClientRect().top<0)releaseFlowRunway?.();
+ window.ScrollTrigger?.refresh();
+ if(record&&location.hash!==hash)history.pushState(null,'',hash);
+ const start=scrollY,begin=performance.now(),duration=animate&&!reduced()?650:0;
+ const journey={frame:0};anchorNavigation=journey;
+ const destination=()=>{
+   if(hash==='#top'||hash==='#main')return 0;
+   const offset=$('.header').offsetHeight+24;
+   return Math.max(0,Math.min(document.documentElement.scrollHeight-innerHeight,target.getBoundingClientRect().top+scrollY-offset));
+ };
+ const tick=now=>{
+   if(anchorNavigation!==journey)return;
+   const progress=duration?Math.min(1,(now-begin)/duration):1;
+   const ease=progress*progress*(3-2*progress);
+   window.scrollTo({top:start+(destination()-start)*ease,behavior:'instant'});
+   previousScrollY=scrollY;
+   if(progress<1)journey.frame=requestAnimationFrame(tick);
+   else{
+     anchorNavigation=null;
+     target.setAttribute('tabindex','-1');target.focus({preventScroll:true});
+   }
+ };
+ journey.frame=requestAnimationFrame(tick);
+}
+document.addEventListener('click',event=>{
+ const link=event.target.closest('a[href^="#"]');
+ if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+ const hash=link.getAttribute('href');if(!anchorTarget(hash))return;
+ event.preventDefault();initialAnchorPending=false;navigateToSection(hash);
+});
+for(const type of ['wheel','touchstart','pointerdown','keydown'])addEventListener(type,()=>{
+ initialAnchorPending=false;cancelAnchorNavigation();
+},{passive:true});
+addEventListener('popstate',()=>{initialAnchorPending=false;navigateToSection(location.hash||'#top',{record:false});});
+addEventListener('hashchange',()=>{initialAnchorPending=false;navigateToSection(location.hash||'#top',{record:false});});
+function alignInitialAnchor(){
+ if(!initialAnchorPending)return;
+ cancelAnimationFrame(initialAnchorFrame);
+ initialAnchorFrame=requestAnimationFrame(()=>{if(initialAnchorPending)navigateToSection(location.hash,{animate:false,record:false});});
+}
 const featureObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('active',e.isIntersecting)),{threshold:.2});$$('.feature').forEach(el=>featureObserver.observe(el));
 const ringObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('motion-visible',e.isIntersecting)),{threshold:.1});ringObserver.observe($('.closing'));
 $('.menu-toggle').addEventListener('click',()=>{const open=$('#navigation').classList.toggle('open');$('.menu-toggle').setAttribute('aria-expanded',String(open));$('.menu-toggle').setAttribute('aria-label',open?'Close menu':'Open menu');});
@@ -243,8 +297,8 @@ $$('.scan-open').forEach(b=>b.addEventListener('click',()=>{scanOpener=b;dialog.
 $('.scan-close').addEventListener('click',closeScan);dialog.addEventListener('cancel',e=>{e.preventDefault();closeScan();});dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeScan();}});
 reducedPreference.addEventListener('change',setup);
 let lastWidth=innerWidth,lastHeight=innerHeight;window.addEventListener('resize',()=>{if(Math.abs(lastWidth-innerWidth)<2&&(innerWidth<=760||Math.abs(lastHeight-innerHeight)<2))return;lastWidth=innerWidth;lastHeight=innerHeight;clearTimeout(resizeTimer);resizeTimer=setTimeout(setup,180);});
-setup();
-document.fonts.ready.then(setup);
-document.addEventListener('shield-model-ready',setup);
-window.addEventListener('load',()=>window.ScrollTrigger?.refresh(),{once:true});
+setup();alignInitialAnchor();
+document.fonts.ready.then(()=>{setup();alignInitialAnchor();});
+document.addEventListener('shield-model-ready',()=>{setup();alignInitialAnchor();});
+window.addEventListener('load',()=>{window.ScrollTrigger?.refresh();alignInitialAnchor();},{once:true});
 })();

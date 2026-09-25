@@ -70,3 +70,23 @@ test('closing during a lookup prevents a late result from restoring old data',as
  assert.equal(t.$('#wallet-address').value,'');assert.equal(t.$('#scan-results').hidden,true);
  assert.equal(t.$('#scan-status').textContent,'');assert.equal(t.$('#scan-submit').disabled,false);
 });
+
+test('severity colours follow each metric and do not turn missing data green',async()=>{
+ let data;
+ const t=setup(async()=>response(data));
+ for(const [visibility,pressure,expectedVisibility,expectedPressure] of [
+  [100,25,'high','low'],[70,70,'moderate','moderate'],[40,30,'low','low'],[41,31,'moderate','moderate'],[71,71,'high','high'],[null,null,'unknown','unknown']
+ ]){
+  data={ok:true,address:other,privacy_score:visibility,copy_exposure:pressure};
+  await t.submit(other);
+  assert.equal(t.$('#scan-exposure-label').attrs['data-severity'],expectedVisibility);
+  assert.equal(t.$('#scan-visibility-note').attrs['data-severity'],expectedVisibility);
+  assert.equal(t.$('#scan-visibility-meter').attrs['data-severity'],expectedVisibility);
+  assert.equal(t.$('#scan-pressure-note').attrs['data-severity'],expectedPressure);
+  assert.equal(t.$('#scan-pressure-meter').attrs['data-severity'],expectedPressure);
+ }
+ data={ok:true,address:other,privacy_score:0,copy_exposure:0,state:'not_in_dataset'};
+ await t.submit(other);
+ assert.equal(t.$('#scan-exposure-label').attrs['data-severity'],'unknown');
+ assert.equal(t.$('#scan-pressure').attrs['data-severity'],'unknown');
+});

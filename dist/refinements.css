@@ -290,3 +290,19 @@
  .menu-toggle{display:block;width:33px;height:40px;margin-left:15px;border:0;background:none;font-size:19px}
 }
 @media(max-width:760px){.header nav{gap:0;align-items:stretch}.header nav .header-scan{padding:12px 0;font-size:16px;text-align:left}}
+
+/* Header interactions retain white text and outlines, never coloured hover text. */
+.header a:hover,.header a:focus-visible,.header button:hover,.header button:focus-visible,
+.header .button.api-access:hover,.header .button.api-access:focus-visible{color:#fff;background:transparent;border-color:#fff;outline-color:#fff}
+.header .button.api-access:hover,.header .button.api-access:focus-visible{box-shadow:inset 0 0 0 1px #fff}
+/* An SVG cross centres by geometry rather than a font's baseline. */
+.scan-top .scan-close{display:grid;place-items:center;padding:0;line-height:1;flex-shrink:0}
+.scan-top .scan-close svg{display:block;width:22px;height:22px}
+.scan-panel [data-severity="high"]{color:#ffaaaa}
+.scan-panel [data-severity="moderate"]{color:#ffe38a}
+.scan-panel [data-severity="low"]{color:#8dffc0}
+.scan-panel [data-severity="unknown"]{color:var(--muted)}
+.scan-exposure-label[data-severity]{border-color:currentColor}
+.scan-meter span[data-severity]{background:currentColor}
+/* Section destinations receive keyboard focus without a decorative frame. */
+main[tabindex="-1"]:focus,main [tabindex="-1"]:focus:not(a):not(button):not(input):not(summary){outline:none}
