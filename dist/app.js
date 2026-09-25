@@ -66,20 +66,24 @@ function setup(){
    const borderLength=edge.getTotalLength(),beam=Math.min(100,sw*.16);
    edge.setAttribute('stroke-dasharray',`${beam} ${borderLength+beam}`);
    if(enabled){
-     // Reveal the panel from the section divider, then send one faster light pass.
+     // The panel follows scroll in both directions; the light plays only after opening.
      const scannerContents=$$('.scanner-intro,.scanner-callout>.scan-open');
-     const scannerReveal=gsap.timeline({paused:true})
-       .fromTo(scanner,{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0% 0)',duration:.6,ease:'power2.inOut'},0)
-       .fromTo(scannerContents,{y:-18,opacity:.2},{y:0,opacity:1,duration:.55,ease:'power2.out'},.1)
-       .fromTo(edge,{attr:{'stroke-dashoffset':beam},opacity:0},{attr:{'stroke-dashoffset':-borderLength},duration:2.1,ease:'none'},.65)
-       .to(edge,{opacity:.65,duration:.2,ease:'sine.out'},.65)
-       .to(edge,{opacity:0,duration:.35,ease:'sine.inOut'},2.4);
-     const finishReveal=()=>{scannerReveal.pause();gsap.set(scanner,{clipPath:'inset(0)'});gsap.set(scannerContents,{y:0,opacity:1});gsap.set(edge,{opacity:0});};
-     const scannerTrigger=ScrollTrigger.create({trigger:scanner,start:'top 86%',end:()=>`bottom ${$('.header').offsetHeight+8}px`,invalidateOnRefresh:true,
-       onEnter:()=>scannerReveal.restart(),onEnterBack:()=>scannerReveal.restart(),
-       onLeave:finishReveal,onLeaveBack:()=>scannerReveal.pause(0)});
-     if(scannerTrigger.isActive)scannerReveal.play();
-     else if(scannerTrigger.progress===1)finishReveal();
+     let lightPlayed=false;
+     const borderSweep=gsap.timeline({paused:true})
+       .fromTo(edge,{attr:{'stroke-dashoffset':beam},opacity:0},{attr:{'stroke-dashoffset':-borderLength},duration:1.2,ease:'none'},0)
+       .to(edge,{opacity:.65,duration:.12,ease:'sine.out'},0)
+       .to(edge,{opacity:0,duration:.22,ease:'sine.inOut'},.98);
+     gsap.timeline({scrollTrigger:{trigger:scanner,start:'top 95%',end:'bottom 88%',scrub:.45,invalidateOnRefresh:true},
+       onUpdate(){
+         if(this.progress()>=.999&&!lightPlayed){
+           lightPlayed=true;
+           const r=scanner.getBoundingClientRect();
+           if(r.bottom>$('.header').offsetHeight&&r.top<innerHeight)borderSweep.restart();
+         }else if(this.progress()<.995&&lightPlayed){lightPlayed=false;borderSweep.pause(0);}
+       }})
+       .fromTo(scanner,{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0% 0)',duration:1,ease:'none'},0)
+       .fromTo(scannerContents,{y:-12,opacity:.2},{y:0,opacity:1,duration:1,ease:'none'},0);
+
    }
 
    const phase={value:0};
