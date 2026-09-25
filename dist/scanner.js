@@ -21,6 +21,15 @@
     input.removeAttribute('aria-invalid');
     $('#scan-full-link').href = scannerUrl(input.value.trim());
   }
+  function resetScanner() {
+    resetRequest();
+    input.value = '';
+    clearResults();
+    $('#scan-detail-link').href = scannerUrl('');
+    $('#scan-result-address').textContent = '';
+    $('#scan-source').textContent = '';
+    $('#scan-dialog').scrollTo({top:0,behavior:'instant'});
+  }
   function render(data, address, capturedAt) {
     const coverage = data.coverage || {}, absent = (coverage.scan || data.state) === 'not_in_dataset';
     const score = !absent && finite(data.privacy_score) ? data.privacy_score : null;
@@ -41,12 +50,8 @@
     text('#scan-source', capturedAt
       ? `Saved official sample · captured ${new Date(capturedAt).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})}. Live preview is currently unavailable.`
       : 'Source: ShieldTX public scanner · retrieved just now.');
-    const notes = [];
-    if (coverage.stale || data.state === 'stale') notes.push('The source marks this snapshot as stale; these are not real-time figures.');
-    if (coverage.copy === 'partial') notes.push('Copy-trader coverage is partial: high-activity periods are capped.');
-    if (data.data_warnings?.some(w => w.status === 'disabled')) notes.push('Counter-trading and some advanced signals are not included in this preview.');
-    if (absent) notes.push('No record in this dataset does not mean that a wallet is private.');
-    text('#scan-data-note', notes.join(' '));
+    text('#scan-data-note', absent ? 'No record in this dataset does not mean that a wallet is private.' : '');
+    $('#scan-data-note').hidden = !absent;
     $('#scan-detail-link').href = scannerUrl(address);
     results.hidden = false;
     status.textContent = 'Preview ready. Results are below.';
@@ -92,5 +97,6 @@
   form.addEventListener('submit', event => { event.preventDefault(); runScan(); });
   sample.addEventListener('click', () => { input.value = sampleAddress; runScan(); });
   input.addEventListener('input', () => { resetRequest(); clearResults(); });
-  $('#scan-dialog').addEventListener('close', () => { resetRequest(); status.textContent = ''; });
+  $('#scan-results-close').addEventListener('click', () => { resetScanner(); input.focus({preventScroll:true}); });
+  $('#scan-dialog').addEventListener('close', resetScanner);
 })();

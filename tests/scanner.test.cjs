@@ -11,7 +11,7 @@ function setup(fetch){
  const elements=new Map();
  const $=id=>{
   if(!elements.has(id)) elements.set(id,{value:'',hidden:false,disabled:false,textContent:'',style:{},events:{},attrs:{},
-   addEventListener(name,fn){this.events[name]=fn},setAttribute(name,v){this.attrs[name]=v},removeAttribute(name){delete this.attrs[name]},focus(){},scrollIntoView(){}});
+   addEventListener(name,fn){this.events[name]=fn},setAttribute(name,v){this.attrs[name]=v},removeAttribute(name){delete this.attrs[name]},focus(){},scrollIntoView(){},scrollTo(){}});
   return elements.get(id);
  };
  vm.runInNewContext(source,{document:{querySelector:$},fetch,AbortController,setTimeout,clearTimeout,Intl,matchMedia:()=>({matches:true})});
@@ -27,7 +27,7 @@ test('sample returns official figures, coverage, and an address-specific detail 
  assert.equal(t.$('#wallet-address').value,address);assert.equal(t.$('#scan-visibility').textContent,100);
  assert.equal(t.$('#scan-pressure').textContent,25);assert.equal(t.$('#scan-copiers').textContent,'233.7K');
  assert.equal(t.$('#scan-activity').textContent,'5.8M');assert.equal(t.$('#scan-copy-status').textContent,'Partial preview');
- assert.match(t.$('#scan-data-note').textContent,/stale/);assert.equal(t.$('#scan-detail-link').href,'https://scanner.shieldtx.xyz/#scan/'+address);
+ assert.equal(t.$('#scan-data-note').hidden,true);assert.equal(t.$('#scan-detail-link').href,'https://scanner.shieldtx.xyz/#scan/'+address);
  assert.equal(t.$('#scan-submit').disabled,false);
 });
 test('sample fallback is clearly dated and never applied to another wallet',async()=>{
@@ -49,4 +49,24 @@ test('editing an address cancels an older response and clears its results',async
 test('a mismatched upstream wallet cannot be displayed as the queried wallet',async()=>{
  const t=setup(async()=>response(snapshot.data));await t.submit(other);
  assert.equal(t.$('#scan-results').hidden,true);assert.match(t.$('#scan-status').textContent,/unavailable/);
+});
+
+for (const [name, selector, event] of [
+ ['closing results', '#scan-results-close', 'click'],
+ ['closing the modal', '#scan-dialog', 'close']
+]) {
+ test(name+' clears the address, results, and scanner links',async()=>{
+  const t=setup(async()=>response(snapshot.data));await t.submit(address);
+  t.$(selector).events[event]();
+  assert.equal(t.$('#wallet-address').value,'');assert.equal(t.$('#scan-results').hidden,true);
+  assert.equal(t.$('#scan-result-address').textContent,'');assert.equal(t.$('#scan-status').textContent,'');
+  assert.equal(t.$('#scan-full-link').href,'https://scanner.shieldtx.xyz/');
+  assert.equal(t.$('#scan-detail-link').href,'https://scanner.shieldtx.xyz/');
+ });
+}
+test('closing during a lookup prevents a late result from restoring old data',async()=>{
+ let resolve;const t=setup(()=>new Promise(r=>{resolve=r}));await t.submit(address);
+ t.$('#scan-dialog').events.close();resolve(response(snapshot.data));await settle();
+ assert.equal(t.$('#wallet-address').value,'');assert.equal(t.$('#scan-results').hidden,true);
+ assert.equal(t.$('#scan-status').textContent,'');assert.equal(t.$('#scan-submit').disabled,false);
 });

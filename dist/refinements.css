@@ -220,3 +220,12 @@
 .scan-result-heading h3{font-family:'Times New Roman',Georgia,serif}
 .scan-unlock-note{margin-top:12px}
 @media(max-width:760px){.scan-results{scroll-margin-top:85px}}
+
+/* Dismiss a scan without closing the scanner; keep input focus understated. */
+#scan-dialog #wallet-address:focus{outline:none;box-shadow:none;border-color:white}
+.scan-result-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:12px}
+.scan-results-close{display:inline-flex;align-items:center;gap:12px;background:transparent;color:var(--ink);border:1px solid #ffffff66;padding:9px 12px;font-size:12px;cursor:pointer;white-space:nowrap}
+.scan-results-close span{font-size:18px;line-height:1}
+.scan-results-close:hover,.scan-results-close:focus-visible{background:var(--blue);border-color:white}
+@media(max-width:760px){.scan-result-actions{width:100%;justify-content:space-between}}
+.scan-detail-button{margin-top:20px}
