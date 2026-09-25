@@ -59,14 +59,22 @@ function setup(){
  }
  
  context=gsap.context(()=>{
-   const scanner=$('.scanner-callout'),border=$('.scanner-border'),edge=$('.scanner-border rect');
-   border.setAttribute('viewBox',`0 0 ${scanner.clientWidth} ${scanner.clientHeight}`);
-   edge.setAttribute('width',scanner.clientWidth-2);edge.setAttribute('height',scanner.clientHeight-2);
+   const scanner=$('.scanner-callout'),border=$('.scanner-border'),edge=$('.scanner-light');
+   const sw=scanner.clientWidth,sh=scanner.clientHeight;
+   border.setAttribute('viewBox',`0 0 ${sw} ${sh}`);
+   edge.setAttribute('d',`M1 1H${sw-7}Q${sw-1} 1 ${sw-1} 7V${sh-1}`);
+   const borderLength=edge.getTotalLength(),beam=Math.min(100,sw*.16);
+   edge.setAttribute('stroke-dasharray',`${beam} ${borderLength+beam}`);
    if(enabled){
-     // Visibility starts the light; elapsed time drives every circuit, not scroll.
-     const borderLoop=gsap.fromTo(edge,{strokeDashoffset:0},{strokeDashoffset:-100,duration:4.5,repeat:-1,ease:'none',paused:true});
-     const setBorderVisible=self=>{borderLoop.paused(!self.isActive);gsap.set(edge,{opacity:self.isActive?1:0});};
-     ScrollTrigger.create({trigger:scanner,start:'bottom bottom',end:()=>`top ${$('.header').offsetHeight+8}px`,invalidateOnRefresh:true,onToggle:setBorderVisible,onRefresh:setBorderVisible});
+     // Animate SVG distances directly: no rounded CSS pixel offsets or looping.
+     const borderSweep=gsap.timeline({paused:true})
+       .fromTo(edge,{attr:{'stroke-dashoffset':beam},opacity:0},{attr:{'stroke-dashoffset':-borderLength},duration:4.2,ease:'none'},0)
+       .to(edge,{opacity:.65,duration:.5,ease:'sine.out'},0)
+       .to(edge,{opacity:0,duration:.7,ease:'sine.inOut'},3.5);
+     const setBorderVisible=self=>{if(self.isActive)borderSweep.restart();else{borderSweep.pause();gsap.set(edge,{opacity:0});}};
+     ScrollTrigger.create({trigger:scanner,start:'bottom bottom',end:()=>`top ${$('.header').offsetHeight+8}px`,invalidateOnRefresh:true,onToggle:setBorderVisible});
+     const sr=scanner.getBoundingClientRect();
+     if(sr.bottom<=innerHeight&&sr.top>$('.header').offsetHeight+8)borderSweep.play();
    }
 
    const phase={value:0};

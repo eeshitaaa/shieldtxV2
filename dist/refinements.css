@@ -160,8 +160,8 @@
 }
 
 .scanner-border{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
-.scanner-border rect{fill:none;stroke:#fff;stroke-width:2;stroke-dasharray:10 90;stroke-linecap:round;opacity:0;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 3px #c5e8ff)}
-@media(prefers-reduced-motion:reduce){.scanner-border rect{stroke-dasharray:none;opacity:.2}}
+.scanner-light{fill:none;stroke:#e6f3ff;stroke-width:1;stroke-linecap:round;opacity:0;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 1px #c5e8ff66)}
+@media(prefers-reduced-motion:reduce){.scanner-light{display:none}}
 /* Match the content's breathing room without adding another external section gap. */
 @media(min-width:761px){.solution-inner,.has-motion .solution-inner{padding-top:64px}}
 @media(max-width:760px){.solution-inner,.has-motion .solution-inner{padding-top:42px}}
