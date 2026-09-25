@@ -74,7 +74,6 @@
 /* Keep the primary calls to action in the white-and-blue palette. */
 .hero .button.solid:hover,.hero .button.solid:focus-visible,
 .api-copy .button.solid:hover,.api-copy .button.solid:focus-visible,
-.header .button:hover,.header .button:focus-visible,
 .button.scan-open:hover,.button.scan-open:focus-visible{
  background:#fff;border-color:#fff;color:var(--blue);
 }
@@ -126,8 +125,7 @@
 .journey>.hero,.journey>.problem,
 .solution-story,.product,.closing,.faq-section,.site-footer{margin-top:var(--section-gap)}
 .hero .button.api-access:hover,.hero .button.api-access:focus-visible,
-.api-copy .button.api-access:hover,.api-copy .button.api-access:focus-visible,
-.header .button.api-access:hover,.header .button.api-access:focus-visible{
+.api-copy .button.api-access:hover,.api-copy .button.api-access:focus-visible{
  background:var(--blue);border-color:#fff;color:#fff;
 }
 .hero-actions .trading-button:hover,.hero-actions .trading-button:focus-visible{
@@ -262,8 +260,6 @@
 @media(prefers-reduced-motion:reduce){.flow-step{transition:none}}
 
 /* White-only header emphasis, including mobile navigation and keyboard focus. */
-.header a:hover,.header a:focus-visible,.header button:hover,.header button:focus-visible{color:#fff;outline-color:#fff}
-.header .button.api-access:hover,.header .button.api-access:focus-visible{background:#fff;border-color:#fff;color:var(--blue)}
 .header nav a:hover,.header nav a:focus-visible{text-decoration:underline;text-underline-offset:6px;text-decoration-color:#fff}
 /* Full official footer directory, within the existing blueprint layout. */
 .footer-upper{gap:clamp(30px,4vw,70px)}
@@ -281,7 +277,7 @@
 /* The scanner is an equal navigation entry, opening the existing dialog. */
 .header nav{gap:clamp(18px,2vw,30px);align-items:center}
 .header-scan{appearance:none;border:0;padding:0;background:none;color:inherit;font:inherit;white-space:nowrap}
-.header nav .header-scan:hover,.header nav .header-scan:focus-visible{color:#fff;text-decoration:underline;text-underline-offset:6px;text-decoration-color:#fff;outline-color:#fff}
+.header nav .header-scan:hover,.header nav .header-scan:focus-visible{color:inherit;text-decoration:underline;text-underline-offset:6px;text-decoration-color:#fff;outline-color:#fff}
 @media(min-width:761px) and (max-width:1000px){
  .header .api-access{margin-left:auto}
  .header nav{display:none;position:absolute;top:calc(100% - 1px);left:-1px;right:-1px;border:1px solid var(--line);background:#0044d8;padding:18px 22px;flex-direction:column;gap:0;align-items:stretch}
@@ -291,16 +287,16 @@
 }
 @media(max-width:760px){.header nav{gap:0;align-items:stretch}.header nav .header-scan{padding:12px 0;font-size:16px;text-align:left}}
 
-/* Header interactions retain white text and outlines, never coloured hover text. */
-.header a:hover,.header a:focus-visible,.header button:hover,.header button:focus-visible,
-.header .button.api-access:hover,.header .button.api-access:focus-visible{color:#fff;background:transparent;border-color:#fff;outline-color:#fff}
-.header .button.api-access:hover,.header .button.api-access:focus-visible{box-shadow:inset 0 0 0 1px #fff}
+/* Keep header hover colours identical to their resting states. */
+.header a:hover,.header button:hover,.header nav a:hover,.header nav .header-scan:hover{color:inherit}
+.header .button.api-access:hover,.header .button.api-access:focus-visible{background:transparent;border-color:#d8ecff;color:var(--ink);box-shadow:none}
+.header a:focus-visible,.header button:focus-visible{outline-color:#fff}
 /* An SVG cross centres by geometry rather than a font's baseline. */
 .scan-top .scan-close{display:grid;place-items:center;padding:0;line-height:1;flex-shrink:0}
 .scan-top .scan-close svg{display:block;width:22px;height:22px}
-.scan-panel [data-severity="high"]{color:#ffaaaa}
-.scan-panel [data-severity="moderate"]{color:#ffe38a}
-.scan-panel [data-severity="low"]{color:#8dffc0}
+.scan-panel [data-severity="high"]{color:#ff8585}
+.scan-panel [data-severity="moderate"]{color:#f3cf58}
+.scan-panel [data-severity="low"]{color:#62dea0}
 .scan-panel [data-severity="unknown"]{color:var(--muted)}
 .scan-exposure-label[data-severity]{border-color:currentColor}
 .scan-meter span[data-severity]{background:currentColor}
