@@ -74,10 +74,231 @@
 /* Keep the primary calls to action in the white-and-blue palette. */
 .hero .button.solid:hover,.hero .button.solid:focus-visible,
 .api-copy .button.solid:hover,.api-copy .button.solid:focus-visible,
-.header .button:hover,.header .button:focus-visible,
 .button.scan-open:hover,.button.scan-open:focus-visible{
  background:#fff;border-color:#fff;color:var(--blue);
 }
 
 /* Keep the remaining footer navigation aligned after removing the motion switch. */
 .bottom-line{justify-content:flex-end}
+
+/* The travelling token uses the same restrained blueprint engraving. */
+.flow-coin .coin-side{fill:var(--blue);stroke:#fff;stroke-width:.8}
+.flow-coin .coin-face{fill:var(--blue);stroke:#fff;stroke-width:.9}
+.flow-coin .coin-rim{fill:none;stroke:#fff;stroke-width:.5}
+#flow-dollar .flow-coin text{fill:var(--blue);stroke:#fff;stroke-width:.55;font-family:DM,Arial,sans-serif;font-weight:600;font-size:28px}
+@media(max-width:760px){.flow-coin{transform:scale(.8)}}
+
+/* Keep the opening composition centered and the navigation close to the top. */
+.header{margin-top:28px}
+@media(min-width:761px){
+ .hero{--hero-gap:clamp(28px,3vw,48px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--hero-gap);align-items:center;min-height:calc(100svh - var(--header) - 66px);padding:58px var(--gutter)}
+ .hero .narrative-copy{width:100%;min-width:0;grid-column:1}
+ .institution-stage,.visual-track{right:calc(var(--gutter) + 1px);width:calc((100% - 2 * var(--gutter) - clamp(28px,3vw,48px) - 2px)/2)}
+ .institution-stage,.visual-stage{max-height:none}
+ .hero h1{font-size:clamp(43px,4.1vw,65px);line-height:1.08;letter-spacing:-.04em;margin:18px 0 24px}
+ .hero-subtitle{font-size:clamp(29px,2.55vw,39px);max-width:560px;margin-bottom:24px}
+ .hero-description{max-width:490px;line-height:1.6}
+ .hero-meta{margin-top:40px}
+}
+@media(max-width:760px){
+ .header{margin-top:20px}
+ .hero h1 br{display:none}
+}
+
+/* Two clear actions: filled API access and an outlined trading entry. */
+.hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hero-actions .trading-button{background:transparent;color:var(--ink);border-color:#d8ecff80}
+.hero-actions .trading-button:hover,.hero-actions .trading-button:focus-visible{background:#ffffff12;border-color:#fff;color:#fff}
+@media(max-width:760px){
+ .hero-actions{gap:10px}
+ .hero-actions .button{padding:12px 12px;gap:8px;font-size:12px}
+}
+
+/* The hero has the same external breathing room on both sides. */
+.journey{--journey-gap:28px}
+.journey>.hero,.journey>.problem{margin-top:var(--journey-gap)}
+@media(max-width:760px){.journey{--journey-gap:20px}}
+
+/* One spacing rhythm from navigation through the footer. */
+:root{--section-gap:48px}
+.journey{--journey-gap:var(--section-gap)}
+.journey>.hero,.journey>.problem,
+.solution-story,.product,.closing,.faq-section,.site-footer{margin-top:var(--section-gap)}
+.hero .button.api-access:hover,.hero .button.api-access:focus-visible,
+.api-copy .button.api-access:hover,.api-copy .button.api-access:focus-visible{
+ background:var(--blue);border-color:#fff;color:#fff;
+}
+.hero-actions .trading-button:hover,.hero-actions .trading-button:focus-visible{
+ background:#fff;border-color:#fff;color:var(--blue);
+}
+@media(max-width:760px){:root{--section-gap:32px}}
+
+
+/* Align the problem copy to the same columns as the travelling graphic. */
+@media(min-width:761px){
+ .problem .narrative-copy{width:calc((100% - clamp(28px,3vw,48px))/2);min-width:0}
+ .problem-rows>div{grid-template-columns:125px 14px minmax(0,1fr)}
+}
+@media(min-width:761px) and (max-width:1100px){
+ .problem-rows>div{grid-template-columns:100px 10px minmax(0,1fr)}
+}
+
+/* The exposure scan stays within the blueprint palette. */
+.problem-bottom.scanner-callout{background:var(--blue);color:var(--ink);padding:42px var(--gutter);gap:24px;overflow:hidden;border-top-color:#d8ecff55}
+.scanner-intro{display:flex;align-items:center;gap:22px;min-width:0}
+.scanner-kicker{display:block;font:10px/1.5 monospace;letter-spacing:.15em;margin-bottom:6px}
+.scanner-copy h3{font:400 clamp(23px,2.1vw,30px)/1.2 'Times New Roman',Georgia,serif;letter-spacing:-.025em;margin:0 0 7px}
+.problem-bottom .scanner-copy p{font:12px/1.5 DM,Arial,sans-serif;color:#d5e6ff;max-width:none}
+.scanner-callout .button.scan-open{background:transparent;color:var(--ink);border-color:#d8ecff99;flex-shrink:0;transition:background .3s,color .3s,transform .3s}
+.scanner-callout .button.scan-open:hover,.scanner-callout .button.scan-open:focus-visible{background:white;color:var(--blue);border-color:white}
+@media(max-width:760px){
+ .problem-bottom.scanner-callout{padding:32px 20px;gap:24px;align-items:stretch}
+ .scanner-copy h3{font-size:23px}.problem-bottom .scanner-copy p{font-size:11px}
+ .scanner-callout .button.scan-open{width:100%;font-size:12px}
+}
+
+.scanner-border{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+.scanner-light{fill:none;stroke:#e6f3ff;stroke-width:1;stroke-linecap:round;opacity:0;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 1px #c5e8ff66)}
+@media(prefers-reduced-motion:reduce){.scanner-light{display:none}}
+/* Match the content's breathing room without adding another external section gap. */
+@media(min-width:761px){.solution-inner,.has-motion .solution-inner{padding-top:88px}}
+@media(max-width:760px){.solution-inner,.has-motion .solution-inner{padding-top:58px}}
+/* Wallet preview: the site's blue, editorial type and restrained data lines. */
+#scan-dialog{background:var(--blue);overscroll-behavior:contain;scroll-behavior:smooth}
+.scan-panel .button.solid:hover,.scan-panel .button.solid:focus-visible{background:var(--blue);color:white;border-color:white}
+.scan-panel .icon-button:hover{background:var(--blue);color:white;border-color:white}
+.scan-grid>div,.scan-form-wrap{min-width:0}
+.scan-grid h2{line-height:1.05}
+.scan-sample-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:18px;font-size:13px;color:var(--muted)}
+.scan-sample{color:var(--ink);background:none;border:0;border-bottom:1px solid #ffffff66;padding:5px 0;cursor:pointer}
+.scan-sample:hover{border-color:white}
+#scan-form .button:disabled,.scan-sample:disabled{opacity:.6;cursor:wait}
+.scan-status{font-size:13px;line-height:1.5;color:var(--muted);margin:16px 0 0}
+.scan-status:empty{display:none}
+.scan-results{border-top:1px solid var(--line);margin-top:20px;padding:32px 0 10px}
+.scan-results[hidden]{display:none}
+.scan-result-heading{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.scan-result-heading h3{font-size:34px;font-weight:400;margin:12px 0;scroll-margin-top:28px}
+.scan-exposure-label{border:1px solid #ffffff66;padding:9px 12px;font-size:12px;white-space:nowrap}
+.scan-result-address{font:12px/1.6 monospace;overflow-wrap:anywhere;margin:0 0 10px;color:var(--muted)}
+.scan-source{font-size:12px;line-height:1.6;color:var(--muted);margin:0 0 24px}
+.scan-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--blue)}
+.scan-metric{padding:22px 18px;min-width:0}
+.scan-metric+.scan-metric{border-left:1px solid var(--line)}
+.scan-metric h4{font-family:inherit;font-size:12px;line-height:1.4;font-weight:400;margin:0 0 18px;color:var(--muted)}
+.scan-number{font-family:Georgia,serif;font-size:44px;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.scan-number small{font:12px/1 monospace;margin-left:4px;color:var(--muted)}
+.scan-meter{height:2px;background:#ffffff24;margin:16px 0}
+.scan-meter span{display:block;height:100%;background:var(--ink)}
+.scan-metric p{font-size:12px;line-height:1.6;color:var(--muted);margin:16px 0 0}
+.scan-coverage{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border-bottom:1px solid var(--line)}
+.scan-coverage>div{padding:20px 18px}
+.scan-coverage dt{font-size:11px;color:var(--muted);margin-bottom:8px}
+.scan-coverage dd{font-size:13px;margin:0;line-height:1.5}
+.scan-data-note,.scan-unlock-note{font-size:12px;line-height:1.6;color:var(--muted)}
+.scan-data-note{margin:20px 0}
+.scan-detail-button{font-size:13px}
+.scan-detail-button:hover,.scan-detail-button:focus-visible{background:var(--blue);color:white;border-color:white}
+@media(max-width:760px){
+ .scan-grid h2{font-size:38px}
+ .scan-result-heading{align-items:flex-start;gap:12px;flex-direction:column}
+ .scan-result-heading h3{font-size:30px}
+ .scan-result-address{margin-top:16px}
+ .scan-metrics,.scan-coverage{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .scan-metric{padding:20px 14px}
+ .scan-metric:nth-child(3){border-left:0}
+ .scan-metric:nth-child(n+3){border-top:1px solid var(--line)}
+ .scan-number{font-size:36px}
+ .scan-coverage>div{padding:18px 12px}
+ .scan-detail-button{width:100%;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){#scan-dialog{scroll-behavior:auto}}
+.scan-top{position:sticky;top:0;z-index:2;background:var(--blue);padding-top:12px}
+.scan-results{scroll-margin-top:100px}
+.scan-result-heading h3{font-family:'Times New Roman',Georgia,serif}
+.scan-unlock-note{margin-top:12px}
+@media(max-width:760px){.scan-results{scroll-margin-top:85px}}
+
+/* Dismiss a scan without closing the scanner; keep input focus understated. */
+#scan-dialog #wallet-address:focus{outline:none;box-shadow:none;border-color:white}
+.scan-result-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:12px}
+.scan-results-close{display:inline-flex;align-items:center;gap:12px;background:transparent;color:var(--ink);border:1px solid #ffffff66;padding:9px 12px;font-size:12px;cursor:pointer;white-space:nowrap}
+.scan-results-close span{font-size:18px;line-height:1}
+.scan-results-close:hover,.scan-results-close:focus-visible{background:var(--blue);border-color:white}
+@media(max-width:760px){.scan-result-actions{width:100%;justify-content:space-between}}
+.scan-detail-button{margin-top:20px}
+
+/* Separate section 3's title, illustration, controls and explanation. */
+.solution-inner>h2{margin-bottom:32px}
+.flow-diagram{padding-top:40px;padding-bottom:64px}
+.flow-controls{margin-top:24px}
+.flow-description{margin-top:28px;min-height:64px}
+.solution-inner .truth{padding-top:20px}
+.solution-inner,.has-motion .solution-inner{padding-bottom:40px}
+@media(min-width:761px) and (max-height:820px){.flow-diagram{padding-top:24px}}
+@media(max-width:760px){
+ .solution-inner>h2{margin-bottom:28px}
+ .flow-diagram{padding-top:26px;padding-bottom:50px}
+ .flow-controls{margin-top:20px}
+ .flow-description{margin-top:26px;min-height:85px}
+ .solution-inner,.has-motion .solution-inner{padding-bottom:32px}
+}
+
+/* Header app entry and consistent white footer interaction states. */
+.header-open-app{white-space:nowrap}
+.header-open-app span{margin-left:5px}
+.site-footer a:hover,.site-footer a:focus-visible,
+.site-footer button:hover,.site-footer button:focus-visible,
+.bottom-line a:hover,.bottom-line a:focus-visible{color:#fff}
+/* Returning to #top includes the header's new top margin. */
+.journey#top{scroll-margin-top:calc(var(--section-gap) + 28px)}
+
+/* Give the final Q&A chapter a longer pause after the API section. */
+.faq-section{margin-top:88px}
+.flow-step{transition:background-color .24s ease,color .24s ease}
+@media(max-width:760px){.faq-section{margin-top:56px}}
+@media(prefers-reduced-motion:reduce){.flow-step{transition:none}}
+
+/* White-only header emphasis, including mobile navigation and keyboard focus. */
+.header nav a:hover,.header nav a:focus-visible{text-decoration:underline;text-underline-offset:6px;text-decoration-color:#fff}
+/* Full official footer directory, within the existing blueprint layout. */
+.footer-upper{gap:clamp(30px,4vw,70px)}
+.footer-upper>div:first-child{max-width:310px}
+.footer-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,55px)}
+.footer-affiliations,.footer-avail{display:flex;align-items:center;gap:12px}
+.footer-affiliations{gap:28px}
+.footer-avail{font-size:11px}
+.footer-avail img{width:70px;height:24px;object-fit:contain;filter:brightness(0) invert(1)}
+.footer-social{font-size:22px;line-height:1}
+.footer-risk{display:block;margin-top:20px;font-size:11px;color:var(--muted)}
+@media(max-width:900px){.footer-upper{flex-direction:column;gap:32px}.footer-columns{width:100%;max-width:680px}.footer-upper>div:first-child{max-width:none}}
+@media(max-width:760px){.footer-columns{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 20px}.footer-affiliations{width:100%;justify-content:space-between}.footer-risk{font-size:10px;line-height:1.6}}
+
+/* The scanner is an equal navigation entry, opening the existing dialog. */
+.header nav{gap:clamp(18px,2vw,30px);align-items:center}
+.header-scan{appearance:none;border:0;padding:0;background:none;color:inherit;font:inherit;white-space:nowrap}
+.header nav .header-scan:hover,.header nav .header-scan:focus-visible{color:inherit;text-decoration:underline;text-underline-offset:6px;text-decoration-color:#fff;outline-color:#fff}
+@media(min-width:761px) and (max-width:1000px){
+ .header .api-access{margin-left:auto}
+ .header nav{display:none;position:absolute;top:calc(100% - 1px);left:-1px;right:-1px;border:1px solid var(--line);background:#0044d8;padding:18px 22px;flex-direction:column;gap:0;align-items:stretch}
+ .header nav.open{display:flex}
+ .header nav a,.header nav button{padding:12px 0;font-size:16px;text-align:left}
+ .menu-toggle{display:block;width:33px;height:40px;margin-left:15px;border:0;background:none;font-size:19px}
+}
+@media(max-width:760px){.header nav{gap:0;align-items:stretch}.header nav .header-scan{padding:12px 0;font-size:16px;text-align:left}}
+
+/* Navigation colours stay steady; the API button fills white on hover. */
+.header a:hover,.header button:hover,.header nav a:hover,.header nav .header-scan:hover{color:inherit}
+.header .button.api-access:hover,.header .button.api-access:focus-visible{background:#fff;border-color:#fff;color:var(--blue);box-shadow:none}
+.header a:focus-visible,.header button:focus-visible{outline-color:#fff}
+/* An SVG cross centres by geometry rather than a font's baseline. */
+.scan-top .scan-close{display:grid;place-items:center;padding:0;line-height:1;flex-shrink:0}
+.scan-top .scan-close svg{display:block;width:22px;height:22px}
+.scan-panel [data-severity="high"]{color:#ff6565}
+.scan-panel [data-severity="moderate"]{color:#e8bc32}
+.scan-panel [data-severity="low"]{color:#3fcb83}
+.scan-panel [data-severity="unknown"]{color:var(--muted)}
+.scan-exposure-label[data-severity]{border-color:currentColor}
+.scan-meter span[data-severity]{background:currentColor}
+/* Section destinations receive keyboard focus without a decorative frame. */
+main[tabindex="-1"]:focus,main [tabindex="-1"]:focus:not(a):not(button):not(input):not(summary){outline:none}

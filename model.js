@@ -60,12 +60,16 @@ function rays(v,time,cx,cy){
  if(!ready){rayStart=null;rayElements.forEach(r=>r.g.setAttribute('opacity','0'));return;}
  if(rayStart===null)rayStart=time;
  const quiet=document.documentElement.classList.contains('motion-off');
+ // A fixed screen-space clearance encloses the coin at every rotation.
+ const boundaryRadius=.50/(v.camera.right-v.camera.left)*600+12;
+ svg.dataset.clearanceRadius=boundaryRadius.toFixed(3);
+ svg.dataset.centerX=cx.toFixed(3);svg.dataset.centerY=cy.toFixed(3);
  const seconds=(time-rayStart)/1000;
  rayElements.forEach((r,i)=>{
   const age=(seconds-i*.88)%7.04,live=quiet?i<4:age>=0&&age<2.30;
   if(!live){r.g.setAttribute('opacity','0');return;}
   const f=quiet?1:clamp(age/1.75),alpha=quiet?.7:clamp(age/.22)*clamp((2.30-age)/.45);
-  const dx=cx-r.x,dy=cy-r.y,len=Math.hypot(dx,dy),endX=cx-dx/len*29,endY=cy-dy/len*29;
+  const dx=cx-r.x,dy=cy-r.y,len=Math.hypot(dx,dy),stopRadius=boundaryRadius+2.4,endX=cx-dx/len*stopRadius,endY=cy-dy/len*stopRadius;
   const px=r.x+(endX-r.x)*f,py=r.y+(endY-r.y)*f;
   r.path.setAttribute('d',`M${r.x} ${r.y}L${px} ${py}`);r.dot.setAttribute('cx',px);r.dot.setAttribute('cy',py);r.g.setAttribute('opacity',alpha.toFixed(3));
  });
@@ -82,10 +86,49 @@ function makeView(host,hero){
  if(hero){
   const contour=new T.ShapePath();
   for(const c of window.shieldDollarCommands){if(c.type==='M')contour.moveTo(c.x,-c.y);else if(c.type==='L')contour.lineTo(c.x,-c.y);else if(c.type==='Q')contour.quadraticCurveTo(c.x1,-c.y1,c.x,-c.y);else if(c.type==='C')contour.bezierCurveTo(c.x1,-c.y1,c.x2,-c.y2,c.x,-c.y);else if(c.type==='Z')contour.currentPath.closePath();}
-  const geometry=new T.ExtrudeGeometry(contour.toShapes(),{depth:.08,bevelEnabled:true,bevelThickness:.008,bevelSize:.007,bevelSegments:2,curveSegments:16});geometry.center();geometry.computeBoundingBox();const scale=.86/(geometry.boundingBox.max.y-geometry.boundingBox.min.y);geometry.scale(scale*1.18,scale,scale);
-  const orb=new T.Group();const face=new T.Mesh(geometry,new T.MeshPhongMaterial({color:0x59c7ff,emissive:0x0758a9,emissiveIntensity:.2,shininess:65}));orb.add(face);face.add(new T.LineSegments(new T.EdgesGeometry(geometry,35),new T.LineBasicMaterial({color:0xd2f7ff,transparent:true,opacity:.85})));orb.rotation.y=-.20;orb.rotation.z=-.10;orb.position.set(0,2.73,.72);scene.add(orb);view.orb=orb;
+  // Blueprint coin: opaque cobalt faces, white engraved contours, hatched edge.
+  const orb=new T.Group();orb.name='DollarCoin';
+  const white=new T.MeshBasicMaterial({color:0xffffff});
+  const blue=new T.MeshBasicMaterial({color:0x004fef});
+  const disc=new T.Shape();disc.absarc(0,0,.48,0,Math.PI*2,false);
+  const bodyGeo=new T.ExtrudeGeometry(disc,{depth:.075,bevelEnabled:false,curveSegments:96});bodyGeo.center();
+  orb.add(new T.Mesh(bodyGeo,blue));
+  const outlines=contour.subPaths.map(path=>path.getPoints(18));
+  const bounds=new T.Box2().setFromPoints(outlines.flat());
+  const center=bounds.getCenter(new T.Vector2()),scale=.63/(bounds.max.y-bounds.min.y);
+  function stroke(points,radius,parent){
+   const curve=new T.CurvePath();
+   for(let i=1;i<points.length;i++)curve.add(new T.LineCurve3(points[i-1],points[i]));
+   parent.add(new T.Mesh(new T.TubeGeometry(curve,points.length*2,radius,5,false),white));
+  }
+  for(const side of [-1,1]){
+   const face=new T.Group();face.position.z=side*.040;
+   if(side<0)face.rotation.y=Math.PI;
+   orb.add(face);
+   for(const [radius,width] of [[.48,.0035],[.443,.0024],[.428,.0018]]){
+    face.add(new T.Mesh(new T.TorusGeometry(radius,width,6,128),white));
+   }
+   for(const start of [.15,Math.PI+.15]){
+    const points=[];
+    for(let i=0;i<=60;i++){const angle=start+i/60*2.55;points.push(new T.Vector3(Math.cos(angle)*.401,Math.sin(angle)*.401,.001));}
+    stroke(points,.0018,face);
+   }
+   for(const path of outlines){
+    const points=path.map(p=>new T.Vector3((p.x-center.x)*scale*1.12,(p.y-center.y)*scale,.002));
+    if(points[0].distanceTo(points[points.length-1])>1e-6)points.push(points[0].clone());
+    stroke(points,.0035,face);
+   }
+  }
+  const milling=[];
+  for(let i=0;i<72;i++){
+   const a=i*Math.PI*2/72,b=a+.024;
+   milling.push(Math.cos(a)*.481,Math.sin(a)*.481,-.037,Math.cos(b)*.481,Math.sin(b)*.481,.037);
+  }
+  const millingGeo=new T.BufferGeometry();millingGeo.setAttribute('position',new T.Float32BufferAttribute(milling,3));
+  orb.add(new T.LineSegments(millingGeo,new T.LineBasicMaterial({color:0xffffff})));
+  orb.rotation.y=-.20;orb.rotation.z=-.10;orb.position.set(0,2.73,.72);scene.add(orb);view.orb=orb;host.dataset.object='dollar-coin';
   const shine=new T.PointLight(0xffffff,1.4);shine.position.set(-1,5,5);scene.add(shine);
-  const halo=new T.Mesh(new T.PlaneGeometry(1.7,1.7),new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{strength:{value:1}},vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 vUv;uniform float strength;void main(){float d=length(vUv-.5)*2.;float a=pow(max(0.,1.-d),3.)*.43*strength;gl_FragColor=vec4(.05,1.,.85,a);}'}));scene.add(halo);view.halo=halo;halo.scale.setScalar(.75);
+  const halo=new T.Mesh(new T.PlaneGeometry(1.7,1.7),new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{strength:{value:1}},vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 vUv;uniform float strength;void main(){float d=length(vUv-.5)*2.;float a=pow(max(0.,1.-d),3.)*.43*strength;gl_FragColor=vec4(.05,1.,.85,a);}'}));scene.add(halo);view.halo=halo;halo.scale.setScalar(.75);halo.visible=false;
  }
  function resize(){const r=host.getBoundingClientRect();if(!r.width||!r.height)return;renderer.setSize(r.width,r.height,false);const aspect=r.width/r.height,span=Math.max(host.id==='flow-model'?8.8:8.5,aspect*6.75);camera.left=-span/2;camera.right=span/2;camera.top=span/aspect/2;camera.bottom=-span/aspect/2;camera.updateProjectionMatrix();renderView(view,performance.now());}
  new ResizeObserver(resize).observe(host);new IntersectionObserver(entries=>{view.visible=entries[0].isIntersecting;if(view.visible)renderView(view,performance.now());},{rootMargin:'80px'}).observe(host);views.push(view);resize();
@@ -95,13 +138,13 @@ function makeView(host,hero){
 function renderView(v,time=0){
  if(!v.visible&&!v.hero)return;
  const p=v.hero?v.phase:0,fade=1-clamp(p/.62);
- // Architecture lives in its own hero-anchored canvas; the travelling sphere
+ // Architecture lives in its own hero-anchored canvas; the travelling coin
  // has a separate canvas and cannot carry the institution into another section.
  if(v.institution)v.institution.visible=true;
  const name=new T.Vector3(0,4.20,1.065).project(v.camera);
  v.host.parentElement.style.setProperty('--name-x',`${(name.x*.5+.5)*100}%`);v.host.parentElement.style.setProperty('--name-y',`${(-name.y*.5+.5)*100}%`);
  if(v.hero){
-  // The sphere descends independently; incoming rays start only after arrival.
+  // The coin descends independently; incoming rays start only after arrival.
   const start=new T.Vector3(0,2.73,.72),depth=start.clone().project(v.camera).z;
   const center=new T.Vector3(0,1-2*299/600,depth).unproject(v.camera);
   v.orb.position.copy(start).lerp(center,clamp((p-.12)/.86));
