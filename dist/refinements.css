@@ -163,8 +163,8 @@
 .scanner-light{fill:none;stroke:#e6f3ff;stroke-width:1;stroke-linecap:round;opacity:0;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 1px #c5e8ff66)}
 @media(prefers-reduced-motion:reduce){.scanner-light{display:none}}
 /* Match the content's breathing room without adding another external section gap. */
-@media(min-width:761px){.solution-inner,.has-motion .solution-inner{padding-top:64px}}
-@media(max-width:760px){.solution-inner,.has-motion .solution-inner{padding-top:42px}}
+@media(min-width:761px){.solution-inner,.has-motion .solution-inner{padding-top:88px}}
+@media(max-width:760px){.solution-inner,.has-motion .solution-inner{padding-top:58px}}
 /* Wallet preview: the site's blue, editorial type and restrained data lines. */
 #scan-dialog{background:var(--blue);overscroll-behavior:contain;scroll-behavior:smooth}
 .scan-panel .button.solid:hover,.scan-panel .button.solid:focus-visible{background:var(--blue);color:white;border-color:white}

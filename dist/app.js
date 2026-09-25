@@ -2,7 +2,7 @@
 'use strict';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const reducedPreference=matchMedia('(prefers-reduced-motion: reduce)');
-let motionChoice=null, context, resizeTimer, solutionTrigger, activeStep=-1, flowTimeline, looping=false, manualPaused=false, tradeNumber=1, setFlowPlaying, firstTradeComplete=false, scrollDriver;
+let motionChoice=null, context, resizeTimer, solutionTrigger, activeStep=-1, flowTimeline, tradeNumber=1, setFlowPlaying, firstTradeComplete=false, scrollDriver;
 let flowReleased=false,releaseFlowRunway;
 const TRADE_END=12.2, STEP_TIMES=[1.8,4.4,6.6,10.5];
 const reduced=()=>motionChoice===null?reducedPreference.matches:motionChoice;
@@ -14,7 +14,7 @@ const stepCopy=[
 ];
 function step(n){n=Math.max(0,Math.min(3,n));if(activeStep===n)return;activeStep=n;$('.step-count').textContent=`0${n+1} / 04`;$('#step-copy').textContent=stepCopy[n];$$('.flow-step').forEach((b,i)=>{b.classList.toggle('active',i===n);b.setAttribute('aria-pressed',String(i===n));});$$('.flow-node').forEach((el,i)=>el.classList.toggle('is-active',i===n));}
 function setup(){
- if(context)context.revert();flowTimeline?.kill();looping=false;manualPaused=false;tradeNumber=1;firstTradeComplete=flowReleased;scrollDriver=null;solutionTrigger=null;activeStep=-1;
+ if(context)context.revert();flowTimeline?.kill();tradeNumber=1;firstTradeComplete=flowReleased;scrollDriver=null;solutionTrigger=null;activeStep=-1;
  const desktop=innerWidth>760, enabled=!reduced()&&window.gsap&&window.ScrollTrigger;
  document.documentElement.classList.toggle('motion-off',!enabled);document.body.classList.toggle('has-motion',!!enabled&&desktop);
  const hero=$('.hero'),problem=$('.problem'),stage=$('.visual-stage'),institutionStage=$('.institution-stage');
@@ -111,10 +111,10 @@ function setup(){
      ScrollTrigger.create({trigger:problem,start:'top 65%',onEnter:()=>showPhase(true),onLeaveBack:()=>showPhase(false)});
      showPhase(problem.getBoundingClientRect().top<innerHeight*.65);
    }
-   const paths=$$('.flow-route,.return-route'),playButton=$('#play-flow'),diagram=$('.flow-diagram');
+   const paths=$$('.flow-route,.return-route'),diagram=$('.flow-diagram');
    paths.forEach(p=>{const len=p.getTotalLength();gsap.set(p,{strokeDasharray:len,strokeDashoffset:len,opacity:0});p.style.markerEnd='none';});
    const draw=(tl,index,start,duration)=>tl.to(paths[index],{strokeDashoffset:0,opacity:1,duration,ease:'none',onUpdate(){paths[index].style.markerEnd=Number(gsap.getProperty(paths[index],'strokeDashoffset'))<2?'url(#flow-arrow)':'none';}},start);
-   playButton.textContent='Watch the flow ↻';playButton.setAttribute('aria-pressed','false');diagram.dataset.trade='1';
+   diagram.dataset.trade='1';
    gsap.set('#fund-wallet .wallet-flap',{scaleY:1,skewX:0,y:0});gsap.set('#fund-wallet .wallet-clasp',{x:0,opacity:1});
    gsap.set('#fresh-wallet',{opacity:1});gsap.set('.account-current',{opacity:0,y:14});gsap.set('.account-history',{opacity:0});
    gsap.set('#execution',{opacity:.4});gsap.set('.execution-check,.new-plus',{opacity:0});gsap.set('.candles',{opacity:.15});
@@ -160,9 +160,9 @@ function setup(){
     .to('#flow-dollar,.flow-route,.return-route,.execution-check',{opacity:0,duration:.6,ease:'none'},12.6)
     .to('#execution',{opacity:.4,duration:.6,ease:'none'},12.6).to({}, {duration:.2},13.2);
    const inView=()=>{const r=diagram.getBoundingClientRect(),header=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'));return r.bottom>header+90&&r.top<innerHeight*.88;};
-   setFlowPlaying=(play)=>{looping=play;diagram.dataset.playing=String(play);playButton.textContent=play?'Pause flow Ⅱ':firstTradeComplete?'Continue flow ↻':'Scroll to follow the trade ↓';playButton.setAttribute('aria-pressed',String(play));if(play){flowTimeline.repeat(-1).play();}else flowTimeline.pause();};
-   const finishFirst=()=>{if(firstTradeComplete)return;firstTradeComplete=true;diagram.dataset.firstTrade='complete';playButton.disabled=false;flowTimeline.repeat(-1);if(!manualPaused&&inView())setFlowPlaying(true);};
-   diagram.dataset.firstTrade=flowReleased?'complete':'scroll';diagram.dataset.playing='false';playButton.textContent=flowReleased?'Continue flow ↻':'Scroll to follow the trade ↓';playButton.disabled=!flowReleased;
+   setFlowPlaying=(play)=>{diagram.dataset.playing=String(play);if(play){flowTimeline.repeat(-1).play();}else flowTimeline.pause();};
+   const finishFirst=()=>{if(firstTradeComplete)return;firstTradeComplete=true;diagram.dataset.firstTrade='complete';flowTimeline.repeat(-1);if(inView())setFlowPlaying(true);};
+   diagram.dataset.firstTrade=flowReleased?'complete':'scroll';diagram.dataset.playing='false';
    step(0);
    if(enabled){
      if(!flowReleased){
@@ -170,8 +170,8 @@ function setup(){
      scrollDriver=gsap.to(progress,{value:1,duration:1,ease:'none',onUpdate(){if(firstTradeComplete)return;furthestProgress=Math.max(furthestProgress,progress.value);flowTimeline.pause().time(furthestProgress*TRADE_END);if(progress.value>=.9999)finishFirst();},scrollTrigger:{trigger:desktop?'.solution-story':'.flow-diagram',start:desktop?()=>`top top+=${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'))+24}`:'top 65%',end:desktop?'bottom bottom':'bottom 45%',scrub:.35,invalidateOnRefresh:true}});
      solutionTrigger=scrollDriver.scrollTrigger;
      }else{flowTimeline.pause().time(TRADE_END);}
-     ScrollTrigger.create({trigger:'.flow-diagram',start:'top 88%',end:()=>`bottom top+=${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'))+90}`,onEnter(){if(firstTradeComplete&&!manualPaused)setFlowPlaying(true);},onEnterBack(){if(firstTradeComplete&&!manualPaused)setFlowPlaying(true);},onLeave(){if(firstTradeComplete)setFlowPlaying(false);},onLeaveBack(){if(firstTradeComplete)setFlowPlaying(false);}});
-   }else{flowTimeline.pause().time(TRADE_END);gsap.set('.account-current,.account-history',{opacity:1,y:0});gsap.set('#flow-dollar',{opacity:1});paths.forEach(p=>{p.style.opacity='1';p.style.strokeDashoffset='0';p.style.markerEnd='url(#flow-arrow)';});playButton.disabled=false;playButton.textContent='Enable motion ↻';}
+     ScrollTrigger.create({trigger:'.flow-diagram',start:'top 88%',end:()=>`bottom top+=${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'))+90}`,onEnter(){if(firstTradeComplete)setFlowPlaying(true);},onEnterBack(){if(firstTradeComplete)setFlowPlaying(true);},onLeave(){if(firstTradeComplete)setFlowPlaying(false);},onLeaveBack(){if(firstTradeComplete)setFlowPlaying(false);}});
+   }else{flowTimeline.pause().time(TRADE_END);gsap.set('.account-current,.account-history',{opacity:1,y:0});gsap.set('#flow-dollar',{opacity:1});paths.forEach(p=>{p.style.opacity='1';p.style.strokeDashoffset='0';p.style.markerEnd='url(#flow-arrow)';});}
    releaseFlowRunway=()=>{
      if(flowReleased||!enabled)return;
      const story=$('.solution-story'),inner=$('.solution-inner');
@@ -181,13 +181,13 @@ function setup(){
      const ir=inner.getBoundingClientRect();
      const anchor=ir.bottom>0&&ir.top<innerHeight?inner:$('.product');
      const before=anchor.getBoundingClientRect().top;
-     flowReleased=true;firstTradeComplete=true;diagram.dataset.firstTrade='complete';playButton.disabled=false;
+     flowReleased=true;firstTradeComplete=true;diagram.dataset.firstTrade='complete';
      scrollDriver?.scrollTrigger?.kill();scrollDriver?.kill();scrollDriver=null;solutionTrigger=null;
      story.classList.add('flow-released');
      const compensation=anchor.getBoundingClientRect().top-before;
      window.scrollTo({top:Math.max(0,scrollY+compensation),behavior:'instant'});
      ScrollTrigger.refresh();
-     if(!manualPaused&&inView())setFlowPlaying(true);
+     if(inView())setFlowPlaying(true);
    };
    const cards=$$('.stack-wallet'),slots=[{x:23,y:34,opacity:.45},{x:76,y:49,opacity:.7},{x:130,y:64,opacity:1}];
    cards.forEach((c,i)=>gsap.set(c,slots[i]));
@@ -209,8 +209,7 @@ function setup(){
  });
  ScrollTrigger.refresh();
 }
-$('#play-flow').addEventListener('click',()=>{if(reduced()){motionChoice=false;setup();return;}if(!firstTradeComplete)return;manualPaused=looping;setFlowPlaying(!looping);});
-$$('.flow-step').forEach(button=>button.addEventListener('click',()=>{const n=Number(button.dataset.step),time=STEP_TIMES[n];if(!firstTradeComplete&&solutionTrigger){window.scrollTo({top:solutionTrigger.start+(solutionTrigger.end-solutionTrigger.start)*time/TRADE_END,behavior:reduced()?'instant':'smooth'});}else{manualPaused=true;setFlowPlaying(false);flowTimeline.time(time);}}));
+$$('.flow-step').forEach(button=>button.addEventListener('click',()=>{const n=Number(button.dataset.step),time=STEP_TIMES[n];if(!firstTradeComplete&&solutionTrigger){window.scrollTo({top:solutionTrigger.start+(solutionTrigger.end-solutionTrigger.start)*time/TRADE_END,behavior:reduced()?'instant':'smooth'});}else{setFlowPlaying(false);flowTimeline.time(time);if(!reduced())setFlowPlaying(true);}}));
 // Reverse travel never retraces the first trade or retains its extra scroll runway.
 let reverseTouchY=0,previousScrollY=scrollY;
 const reverseAllowed=target=>!target?.closest('dialog,input,textarea,select,[contenteditable="true"]');
