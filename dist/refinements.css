@@ -254,3 +254,9 @@
 .bottom-line a:hover,.bottom-line a:focus-visible{color:#fff}
 /* Returning to #top includes the header's new top margin. */
 .journey#top{scroll-margin-top:calc(var(--section-gap) + 28px)}
+
+/* Give the final Q&A chapter a longer pause after the API section. */
+.faq-section{margin-top:88px}
+.flow-step{transition:background-color .24s ease,color .24s ease}
+@media(max-width:760px){.faq-section{margin-top:56px}}
+@media(prefers-reduced-motion:reduce){.flow-step{transition:none}}

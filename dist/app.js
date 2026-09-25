@@ -2,7 +2,7 @@
 'use strict';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const reducedPreference=matchMedia('(prefers-reduced-motion: reduce)');
-let motionChoice=null, context, resizeTimer, solutionTrigger, activeStep=-1, flowTimeline, tradeNumber=1, setFlowPlaying, firstTradeComplete=false, scrollDriver;
+let motionChoice=null, context, resizeTimer, solutionTrigger, activeStep=-1, flowTimeline, tradeNumber=1, setFlowPlaying, firstTradeComplete=false, scrollDriver, flowSeek, displayedStepCopy='';
 let flowReleased=false,releaseFlowRunway;
 const TRADE_END=12.2, STEP_TIMES=[1.8,4.4,6.6,10.5];
 const reduced=()=>motionChoice===null?reducedPreference.matches:motionChoice;
@@ -12,9 +12,17 @@ const stepCopy=[
  'A fresh account keeps your main wallet out of the public trading trail.',
  'Execute on Hyperliquid. Closing proceeds return to your ShieldTX balance.'
 ];
-function step(n){n=Math.max(0,Math.min(3,n));if(activeStep===n)return;activeStep=n;$('.step-count').textContent=`0${n+1} / 04`;$('#step-copy').textContent=stepCopy[n];$$('.flow-step').forEach((b,i)=>{b.classList.toggle('active',i===n);b.setAttribute('aria-pressed',String(i===n));});$$('.flow-node').forEach((el,i)=>el.classList.toggle('is-active',i===n));}
+function showStepCopy(value, immediate=false){
+ if(value===displayedStepCopy)return;
+ displayedStepCopy=value;
+ const copy=$('#step-copy');
+ window.gsap?.killTweensOf(copy);
+ if(immediate||reduced()||!window.gsap){copy.textContent=value;copy.style.opacity='1';return;}
+ gsap.to(copy,{opacity:0,duration:.09,ease:'sine.out',onComplete(){copy.textContent=value;gsap.to(copy,{opacity:1,duration:.18,ease:'sine.out'});}});
+}
+function step(n){n=Math.max(0,Math.min(3,n));if(activeStep===n)return;activeStep=n;$('.step-count').textContent=`0${n+1} / 04`;showStepCopy(stepCopy[n]);$$('.flow-step').forEach((b,i)=>{b.classList.toggle('active',i===n);b.setAttribute('aria-pressed',String(i===n));});$$('.flow-node').forEach((el,i)=>el.classList.toggle('is-active',i===n));}
 function setup(){
- if(context)context.revert();flowTimeline?.kill();tradeNumber=1;firstTradeComplete=flowReleased;scrollDriver=null;solutionTrigger=null;activeStep=-1;
+ flowSeek?.kill();flowSeek=null;window.gsap?.killTweensOf('#step-copy,.account-history');displayedStepCopy='';if(context)context.revert();flowTimeline?.kill();tradeNumber=1;firstTradeComplete=flowReleased;scrollDriver=null;solutionTrigger=null;activeStep=-1;
  const desktop=innerWidth>760, enabled=!reduced()&&window.gsap&&window.ScrollTrigger;
  document.documentElement.classList.toggle('motion-off',!enabled);document.body.classList.toggle('has-motion',!!enabled&&desktop);
  const hero=$('.hero'),problem=$('.problem'),stage=$('.visual-stage'),institutionStage=$('.institution-stage');
@@ -118,7 +126,7 @@ function setup(){
    gsap.set('#fund-wallet .wallet-flap',{scaleY:1,skewX:0,y:0});gsap.set('#fund-wallet .wallet-clasp',{x:0,opacity:1});
    gsap.set('#fresh-wallet',{opacity:1});gsap.set('.account-current',{opacity:0,y:14});gsap.set('.account-history',{opacity:0});
    gsap.set('#execution',{opacity:.4});gsap.set('.execution-check,.new-plus',{opacity:0});gsap.set('.candles',{opacity:.15});
-   const chart=$('.chart-trace'),chartLength=chart.getTotalLength();gsap.set(chart,{strokeDasharray:chartLength,strokeDashoffset:chartLength});
+   const chart=$('.chart-trace'),chartLength=chart.getTotalLength();gsap.set(chart,{strokeDasharray:chartLength,strokeDashoffset:chartLength,opacity:0});
    gsap.set('#flow-dollar',{opacity:0});$('#flow-dollar-position').setAttribute('transform',`translate(${points[0].x} ${points[0].y})`);gsap.set('#return-particle',{opacity:0});
    $('.account-number').textContent='ACCOUNT 01';
    // Sample by distance along the curve, so bends cannot accelerate the dollar.
@@ -132,23 +140,23 @@ function setup(){
      $('#flow-dollar-position').setAttribute('transform',`translate(${point.x} ${point.y})`);
      diagram.dataset.flowTime=t.toFixed(3);
      paths.forEach((path,i)=>path.style.markerEnd=t>=[3,5.2,7.8,11.8][i]?'url(#flow-arrow)':'none');
-     if(t>=9.4)$('#step-copy').textContent='Closing proceeds return to your ShieldTX balance. Ready for the next trade.';
+     if(t>=9.4)showStepCopy('Closing proceeds return to your ShieldTX balance. Ready for the next trade.');
    },onRepeat(){
      tradeNumber++;diagram.dataset.trade=String(tradeNumber);$('.account-number').textContent=`ACCOUNT ${String(tradeNumber).padStart(2,'0')}`;
-     gsap.set('.history-one',{opacity:.35});gsap.set('.history-two',{opacity:tradeNumber>2?.18:0});
+     gsap.to('.history-one',{opacity:.35,duration:.45,ease:'sine.inOut',overwrite:true});gsap.to('.history-two',{opacity:tradeNumber>2?.18:0,duration:.45,ease:'sine.inOut',overwrite:true});
    }});
    // One continuous sequence; the first pass is scrubbed, subsequent passes repeat.
-   flowTimeline.to('#fund-wallet .wallet-clasp',{x:8,opacity:.35,duration:.4,ease:'none'},0)
-    .to('#fund-wallet .wallet-flap',{scaleY:.44,skewX:-10,y:14,duration:.6,ease:'none'},.3)
+   flowTimeline.to('#fund-wallet .wallet-clasp',{x:8,opacity:.35,duration:.4,ease:'sine.inOut'},0)
+    .to('#fund-wallet .wallet-flap',{scaleY:.44,skewX:-10,y:14,duration:.6,ease:'sine.inOut'},.3)
     .to('#flow-dollar',{opacity:1,duration:.3,ease:'none'},.7)
-    .to('#fund-wallet .wallet-flap',{scaleY:1,skewX:0,y:0,duration:.6,ease:'none'},2.2)
-    .to('#fund-wallet .wallet-clasp',{x:0,opacity:1,duration:.4,ease:'none'},2.6);
+    .to('#fund-wallet .wallet-flap',{scaleY:1,skewX:0,y:0,duration:.6,ease:'sine.inOut'},2.2)
+    .to('#fund-wallet .wallet-clasp',{x:0,opacity:1,duration:.4,ease:'sine.inOut'},2.6);
    draw(flowTimeline,0,1,2);draw(flowTimeline,1,3.6,1.6);
-   flowTimeline.to('.account-current',{opacity:1,y:0,duration:1,ease:'none'},5.2).to('.new-plus',{opacity:1,duration:.4,ease:'none'},5.8);
+   flowTimeline.to('.account-current',{opacity:1,y:0,duration:1,ease:'sine.out'},5.2).to('.new-plus',{opacity:1,duration:.4,ease:'none'},5.8);
    draw(flowTimeline,2,6.2,1.6);
    flowTimeline.to('#execution',{opacity:1,duration:.6,ease:'none'},7.6)
     .to('.candles',{opacity:1,duration:.6,ease:'none'},7.8)
-    .to(chart,{strokeDashoffset:0,duration:1.2,ease:'none'},7.8)
+    .to(chart,{strokeDashoffset:0,opacity:1,duration:1.2,ease:'none'},7.8)
     .to('.execution-check',{opacity:1,duration:.4,ease:'none'},9);
    draw(flowTimeline,3,9.4,2.4);
    const returnPath=paths[3],length=returnPath.getTotalLength(),travel={p:0};
@@ -158,20 +166,23 @@ function setup(){
    // Settlement remains visible before a soft, synchronized reset.
    flowTimeline.to('.account-current',{y:-9,opacity:0,duration:.6,ease:'sine.inOut'},12.6)
     .to('#flow-dollar,.flow-route,.return-route,.execution-check',{opacity:0,duration:.6,ease:'none'},12.6)
-    .to('#execution',{opacity:.4,duration:.6,ease:'none'},12.6).to({}, {duration:.2},13.2);
+    .to('#execution',{opacity:.4,duration:.6,ease:'sine.inOut'},12.6)
+    .to('.chart-trace,.new-plus',{opacity:0,duration:.6,ease:'sine.inOut'},12.6)
+    .to('.candles',{opacity:.15,duration:.6,ease:'sine.inOut'},12.6)
+    .to({}, {duration:.2},13.2);
    const inView=()=>{const r=diagram.getBoundingClientRect(),header=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'));return r.bottom>header+90&&r.top<innerHeight*.88;};
-   setFlowPlaying=(play)=>{diagram.dataset.playing=String(play);if(play){flowTimeline.repeat(-1).play();}else flowTimeline.pause();};
+   setFlowPlaying=(play)=>{if(!play){flowSeek?.kill();flowSeek=null;}diagram.dataset.playing=String(play);if(play){flowTimeline.repeat(-1).play();}else flowTimeline.pause();};
    const finishFirst=()=>{if(firstTradeComplete)return;firstTradeComplete=true;diagram.dataset.firstTrade='complete';flowTimeline.repeat(-1);if(inView())setFlowPlaying(true);};
    diagram.dataset.firstTrade=flowReleased?'complete':'scroll';diagram.dataset.playing='false';
    step(0);
    if(enabled){
      if(!flowReleased){
      const progress={value:0};let furthestProgress=0;
-     scrollDriver=gsap.to(progress,{value:1,duration:1,ease:'none',onUpdate(){if(firstTradeComplete)return;furthestProgress=Math.max(furthestProgress,progress.value);flowTimeline.pause().time(furthestProgress*TRADE_END);if(progress.value>=.9999)finishFirst();},scrollTrigger:{trigger:desktop?'.solution-story':'.flow-diagram',start:desktop?()=>`top top+=${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'))+24}`:'top 65%',end:desktop?'bottom bottom':'bottom 45%',scrub:.35,invalidateOnRefresh:true}});
+     scrollDriver=gsap.to(progress,{value:1,duration:1,ease:'none',onUpdate(){if(firstTradeComplete)return;furthestProgress=Math.max(furthestProgress,progress.value);flowTimeline.pause().time(furthestProgress*TRADE_END);if(progress.value>=.9999)finishFirst();},scrollTrigger:{trigger:desktop?'.solution-story':'.flow-diagram',start:desktop?()=>`top top+=${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'))+24}`:'top 65%',end:desktop?'bottom bottom':'bottom 45%',scrub:.55,invalidateOnRefresh:true}});
      solutionTrigger=scrollDriver.scrollTrigger;
      }else{flowTimeline.pause().time(TRADE_END);}
      ScrollTrigger.create({trigger:'.flow-diagram',start:'top 88%',end:()=>`bottom top+=${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'))+90}`,onEnter(){if(firstTradeComplete)setFlowPlaying(true);},onEnterBack(){if(firstTradeComplete)setFlowPlaying(true);},onLeave(){if(firstTradeComplete)setFlowPlaying(false);},onLeaveBack(){if(firstTradeComplete)setFlowPlaying(false);}});
-   }else{flowTimeline.pause().time(TRADE_END);gsap.set('.account-current,.account-history',{opacity:1,y:0});gsap.set('#flow-dollar',{opacity:1});paths.forEach(p=>{p.style.opacity='1';p.style.strokeDashoffset='0';p.style.markerEnd='url(#flow-arrow)';});}
+   }else{flowTimeline.pause().time(TRADE_END);gsap.set('.account-current,.account-history',{opacity:1,y:0});gsap.set('#flow-dollar,.chart-trace',{opacity:1});paths.forEach(p=>{p.style.opacity='1';p.style.strokeDashoffset='0';p.style.markerEnd='url(#flow-arrow)';});}
    releaseFlowRunway=()=>{
      if(flowReleased||!enabled)return;
      const story=$('.solution-story'),inner=$('.solution-inner');
@@ -209,7 +220,11 @@ function setup(){
  });
  ScrollTrigger.refresh();
 }
-$$('.flow-step').forEach(button=>button.addEventListener('click',()=>{const n=Number(button.dataset.step),time=STEP_TIMES[n];if(!firstTradeComplete&&solutionTrigger){window.scrollTo({top:solutionTrigger.start+(solutionTrigger.end-solutionTrigger.start)*time/TRADE_END,behavior:reduced()?'instant':'smooth'});}else{setFlowPlaying(false);flowTimeline.time(time);if(!reduced())setFlowPlaying(true);}}));
+$$('.flow-step').forEach(button=>button.addEventListener('click',()=>{const n=Number(button.dataset.step),time=STEP_TIMES[n];if(!firstTradeComplete&&solutionTrigger){window.scrollTo({top:solutionTrigger.start+(solutionTrigger.end-solutionTrigger.start)*time/TRADE_END,behavior:reduced()?'instant':'smooth'});}else{
+ setFlowPlaying(false);
+ if(reduced()){flowTimeline.time(time);return;}
+ flowSeek=flowTimeline.tweenTo(time,{duration:.65,ease:'sine.inOut',onComplete(){flowSeek=null;const r=$('.flow-diagram').getBoundingClientRect();if(r.bottom>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'))+90&&r.top<innerHeight*.88)setFlowPlaying(true);}});
+}}));
 // Reverse travel never retraces the first trade or retains its extra scroll runway.
 let reverseTouchY=0,previousScrollY=scrollY;
 const reverseAllowed=target=>!target?.closest('dialog,input,textarea,select,[contenteditable="true"]');
