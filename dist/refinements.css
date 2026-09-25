@@ -90,7 +90,7 @@
 @media(max-width:760px){.flow-coin{transform:scale(.8)}}
 
 /* Keep the opening composition centered and the navigation close to the top. */
-.header{margin-top:10px}
+.header{margin-top:28px}
 @media(min-width:761px){
  .hero{--hero-gap:clamp(28px,3vw,48px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--hero-gap);align-items:center;min-height:calc(100svh - var(--header) - 66px);padding:58px var(--gutter)}
  .hero .narrative-copy{width:100%;min-width:0;grid-column:1}
@@ -102,7 +102,7 @@
  .hero-meta{margin-top:40px}
 }
 @media(max-width:760px){
- .header{margin-top:8px}
+ .header{margin-top:20px}
  .hero h1 br{display:none}
 }
 
@@ -121,7 +121,7 @@
 @media(max-width:760px){.journey{--journey-gap:20px}}
 
 /* One spacing rhythm from navigation through the footer. */
-:root{--section-gap:28px}
+:root{--section-gap:48px}
 .journey{--journey-gap:var(--section-gap)}
 .journey>.hero,.journey>.problem,
 .solution-story,.product,.closing,.faq-section,.site-footer{margin-top:var(--section-gap)}
@@ -133,7 +133,7 @@
 .hero-actions .trading-button:hover,.hero-actions .trading-button:focus-visible{
  background:#fff;border-color:#fff;color:var(--blue);
 }
-@media(max-width:760px){:root{--section-gap:20px}}
+@media(max-width:760px){:root{--section-gap:32px}}
 
 
 /* Align the problem copy to the same columns as the travelling graphic. */
@@ -245,3 +245,12 @@
  .flow-description{margin-top:26px;min-height:85px}
  .solution-inner,.has-motion .solution-inner{padding-bottom:32px}
 }
+
+/* Header app entry and consistent white footer interaction states. */
+.header-open-app{white-space:nowrap}
+.header-open-app span{margin-left:5px}
+.site-footer a:hover,.site-footer a:focus-visible,
+.site-footer button:hover,.site-footer button:focus-visible,
+.bottom-line a:hover,.bottom-line a:focus-visible{color:#fff}
+/* Returning to #top includes the header's new top margin. */
+.journey#top{scroll-margin-top:calc(var(--section-gap) + 28px)}
