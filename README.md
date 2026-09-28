@@ -1,65 +1,11 @@
-# ShieldTX — Geometry in motion
+# ShieldTX V2: with-ss
 
-The current ShieldTX website concept: a blue geometric design with a procedural 3D institution, rotating dollar, scroll-driven transaction flow, and animated product illustrations.
+Exact static copy of https://shieldtx-geometry-in-motion.abheek-tripathy.chatgpt.site/
 
-## Run locally
+Source commit: `01b527f46eaf7cde1f0a0069a4f83248a66d2ae1`.
 
-No build or dependency installation is required to view the website. From the repository root:
+Vercel project: `shieldtx-v2`. Preview branch: `codex/with-ss`.
 
-```sh
-python3 -m http.server 4197 --directory dist
-```
+Stable comparison URL: https://shieldtx-v2-with-ss.vercel.app/
 
-Open http://localhost:4197/ in your browser. Any static host can serve the `dist` directory.
-
-## Deployment
-
-[Live website](https://eeshitaaa.github.io/shieldtxx/)
-
-GitHub Pages serves the `codex/github-pages` branch, generated from `dist`. To publish future changes, commit them on `main`, push `main`, then run:
-
-```sh
-git subtree push --prefix dist origin codex/github-pages
-```
-
-GitHub automatically publishes updates pushed to that deployment branch.
-
-## Project files
-
-- `dist/index.html` — page content, navigation, FAQ and wallet exposure scan dialog.
-- `dist/style.css` — base layout and typography.
-- `dist/refinements.css` — illustration styles, hover treatments and responsive refinements.
-- `dist/model.js` and `dist/dollar-shape.js` — procedural institution and rotating 3D dollar.
-- `dist/app.js` — scroll choreography, transaction flow, account cycling and interactions.
-- `dist/assets/` — bundled fonts and browser libraries.
-- `dist/card.html`, `scripts/` and `reference-snapshot/` — earlier concept material and export utilities. These are not required to run the website. The optional export scripts require `@shuding/opentype.js` and `three`.
-
-## Current interactions
-
-- The dollar rotates 360 degrees and is 18% wider than the earlier version.
-- Returning upward restores the dollar, orbit and incoming rays in section 2.
-- Section 2 scrolls freely, with no gesture pause. All incoming rays begin on the outer orbit.
-- Section 3's first trade follows scrolling, then repeats automatically. Scrolling back releases its additional scroll distance without reversing the trade.
-- All four product cards invert to white with blue text and graphics on hover.
-- The three API diagram blocks invert to white with blue text on hover.
-- Primary API and wallet exposure scan buttons use white-and-blue hover states.
-- Reduced-motion mode, responsive layouts and manual flow controls are supported.
-
-## Checks
-
-```sh
-node --check dist/app.js
-node --check dist/model.js
-```
-
-This is a front-end design preview. API requests and wallet scans open ShieldTX's official services; this website does not execute trades or collect wallet credentials.
-
-[Public preview](https://shieldtx-geometry-in-motion.abheek-tripathy.chatgpt.site/)
-
-Exported from the published source commit `410661bfa1d69d64c395482c0e9f0a5c9e6ac9d9`.
-
-## Wallet scanner preview (yappe/coin)
-
-The dialog fetches ShieldTX's public scanner preview via the single external rewrite in `vercel.json`. It validates addresses, displays exposure/activity/coverage, and links to the full official scanner. No wallet connection is requested. Upstream stale and partial-coverage labels remain visible.
-
-Run `python3 scripts/preview.py` for a local preview on http://127.0.0.1:4202 with the same API forwarding route. A plain static server also works: if the API is unavailable, the official sample uses a clearly labelled snapshot captured on 25 September 2026. Other addresses receive an unavailable message and an official scanner link, never sample data.
+Serve `dist` locally with any static HTTP server. This variant preserves the linked website’s original design and interactions.
