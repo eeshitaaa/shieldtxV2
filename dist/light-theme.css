@@ -1,0 +1,40 @@
+/* Alternate palette; geometry, sizing and choreography are shared with the blue site. */
+:root{--ink:#004fef;--muted:#315fae;--line:#004fef30;--cyan:#004fef;--surface:#fff;color-scheme:light}
+body{background:#fff}
+body:before{position:absolute;inset:0 0 auto;height:var(--hero-end,850px);background:#004fef;z-index:-1}
+.hero,.header:not(.light-header){--ink:#f8fbff;--muted:#d5e6ff;--line:#9dc5ff50;--cyan:#fff;--surface:#004fef;color:var(--ink)}
+.hero{background-color:#004fef;background-image:linear-gradient(#c3dfff0f 1px,transparent 1px),linear-gradient(90deg,#c3dfff0f 1px,transparent 1px),linear-gradient(#c3dfff04 1px,transparent 1px),linear-gradient(90deg,#c3dfff04 1px,transparent 1px)}
+.header{transition:background-color .3s,color .3s,border-color .3s;box-shadow:none}
+.header.light-header{background:#fffffffa;color:var(--blue);border-color:var(--line)}
+.header.light-header nav{background:#fff}.header nav a:hover,footer a:hover{text-decoration:underline;text-underline-offset:5px}
+.button{border-color:currentColor}.button.solid{background:var(--blue);color:#fff;border-color:var(--blue)}
+.hero .button.solid{background:#fff;color:var(--blue);border-color:#fff}
+.header:not(.light-header) .button:hover,.header:not(.light-header) .button:focus-visible{background:#fff;color:var(--blue)}
+.header.light-header .button:hover,.header.light-header .button:focus-visible,.button.scan-open:hover,.button.scan-open:focus-visible,.api-copy .button.solid:hover,.api-copy .button.solid:focus-visible{background:var(--blue);color:#fff;border-color:var(--blue)}
+.hero .button.solid:hover{background:#eaf2ff}
+.panel:not(.hero){background-color:#fff;background-image:linear-gradient(#004fef0b 1px,transparent 1px),linear-gradient(90deg,#004fef0b 1px,transparent 1px),linear-gradient(#004fef03 1px,transparent 1px),linear-gradient(90deg,#004fef03 1px,transparent 1px)}
+.panel:after{background:linear-gradient(currentColor,currentColor) left 5px top/15px 1px no-repeat,linear-gradient(currentColor,currentColor) left top 5px/1px 15px no-repeat,linear-gradient(currentColor,currentColor) right 5px bottom/15px 1px no-repeat,linear-gradient(currentColor,currentColor) right bottom 5px/1px 15px no-repeat;opacity:.3}
+main:before,main:after{background:linear-gradient(90deg,#004fef 1px,transparent 1px),repeating-linear-gradient(0deg,transparent 0 21px,#004fef 21px 22px);opacity:.14}
+.problem-bottom{background:#fff}.feature-grid,.feature,.faq-intro,.faq-section,.faq-section .qa{background:#fff}
+.section-heading:after,.solution-inner:after{background:repeating-linear-gradient(90deg,#004fef 0 1px,transparent 1px 9px);border-color:#004fef;opacity:.22}
+.ball-orbit{color:#004fef}.edge-label{color:#fff}.edge-label.exposed{color:#004fef}
+.visual-stage:before{background:none}
+.attack-rays path{stroke:#004fef}.attack-rays circle{fill:#004fef}.attack-rays text{fill:#004fef;stroke:#fff}
+.diagram-art .flow-object,.geo,.feature-art svg,.stack-wallet{stroke:#004fef;color:#004fef}
+.geo text,.account-number,.execution text{fill:#004fef}
+.wallet-back,.wallet-face,.account-history,.account-current,.monitor-screen,.stack-wallet,.geo .fresh-frame path,.geo .order-packet{fill:#fff}
+.chart-trace,.candles,.execution-check{stroke:#004fef}
+.routes>g{stroke:#004fef}.routes marker path,#return-particle{fill:#004fef}
+#flow-dollar text{fill:#004fef;stroke:#004fef}#flow-dollar .dollar-depth{fill:#89adf6;stroke:#89adf6}
+.flow-step{color:#004fef}.flow-step.active{background:#004fef;color:#fff}
+.replay-flow{color:var(--muted);border-color:var(--line)}
+.api-geometry>span,.api-geometry>b{background:#fff;color:#004fef;border-color:#004fef70}
+.closing .geo-ring{border-color:#004fef30}.geo-ring:after{background:#004fef}
+.site-footer{background:#fff}.footer-base small{color:var(--muted)}
+dialog{background:#fff;color:#004fef}.scan-panel{background-image:linear-gradient(#004fef08 1px,transparent 1px),linear-gradient(90deg,#004fef08 1px,transparent 1px)}
+.icon-button{color:#004fef}#wallet-address{background:#fff;color:#004fef;border-color:#004fef70}#wallet-address::placeholder{color:#5376ad}#scan-error{color:#004fef;border-color:#004fef}
+@media(hover:hover){
+ .feature:hover{background:#f0f5ff;color:#004fef}.feature:hover .stack-wallet,.feature:hover .order-packet{fill:#f0f5ff}
+ .api-geometry>span:hover,.api-geometry>b:hover{background:#004fef;color:#fff;border-color:#004fef}
+}
+@media(prefers-reduced-motion:reduce){.header{transition:none}}
