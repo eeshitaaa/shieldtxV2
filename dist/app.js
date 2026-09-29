@@ -4,6 +4,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const reducedPreference=matchMedia('(prefers-reduced-motion: reduce)');
 let motionChoice=null, context, resizeTimer, solutionTrigger, activeStep=-1, flowTimeline, tradeNumber=1, setFlowPlaying, firstTradeComplete=false, scrollDriver, flowSeek, displayedStepCopy='';
 let flowReleased=false,releaseFlowRunway;
+let pinnedStep=null,hoveredStep=null,focusedStep=null;
 let anchorNavigation=null,initialAnchorPending=!!location.hash,initialAnchorFrame=0;
 const TRADE_END=12.2, STEP_TIMES=[1.8,4.4,6.6,10.5];
 const reduced=()=>motionChoice===null?reducedPreference.matches:motionChoice;
@@ -21,7 +22,21 @@ function showStepCopy(value, immediate=false){
  if(immediate||reduced()||!window.gsap){copy.textContent=value;copy.style.opacity='1';return;}
  gsap.to(copy,{opacity:0,duration:.09,ease:'sine.out',onComplete(){copy.textContent=value;gsap.to(copy,{opacity:1,duration:.18,ease:'sine.out'});}});
 }
-function step(n){n=Math.max(0,Math.min(3,n));if(activeStep===n)return;activeStep=n;$('.step-count').textContent=`0${n+1} / 04`;showStepCopy(stepCopy[n]);$$('.flow-step').forEach((b,i)=>{b.classList.toggle('active',i===n);b.setAttribute('aria-pressed',String(i===n));});$$('.flow-node').forEach((el,i)=>el.classList.toggle('is-active',i===n));}
+function renderStepDetails(){
+ const selected=hoveredStep??focusedStep??pinnedStep;
+ const n=selected??Math.max(0,activeStep);
+ $('.step-count').textContent=`0${n+1} / 04`;
+ const returning=selected===null&&flowTimeline?.time()>=9.4;
+ showStepCopy(returning?'Closing proceeds return to your ShieldTX balance. Ready for the next trade.':stepCopy[n]);
+ $('.flow-description').dataset.mode=selected===null?'following':'exploring';
+ $('.follow-flow').hidden=pinnedStep===null;
+ $$('.flow-step').forEach((b,i)=>{
+  b.classList.toggle('active',i===n);
+  b.classList.toggle('is-pinned',i===pinnedStep);
+  b.setAttribute('aria-pressed',String(i===pinnedStep));
+ });
+}
+function step(n){n=Math.max(0,Math.min(3,n));activeStep=n;renderStepDetails();$$('.flow-node').forEach((el,i)=>el.classList.toggle('is-active',i===n));}
 function setup(){
  flowSeek?.kill();flowSeek=null;window.gsap?.killTweensOf('#step-copy,.account-history');displayedStepCopy='';if(context)context.revert();flowTimeline?.kill();tradeNumber=1;firstTradeComplete=flowReleased;scrollDriver=null;solutionTrigger=null;activeStep=-1;
  const desktop=innerWidth>760, enabled=!reduced()&&window.gsap&&window.ScrollTrigger;
@@ -35,15 +50,15 @@ function setup(){
    const artHeight=stage.getBoundingClientRect().height;
    heroTop=Math.max(24,(hero.offsetHeight-artHeight)/2);
    institutionStage.style.top=`${heroTop}px`;
-   const bottom=$('.problem-bottom').offsetHeight,copy=$('.problem .narrative-copy');
-   // Reserve a separate scanner row; center text and orbit in the same upper area.
+   const bottom=problem.querySelector('.problem-bottom')?.offsetHeight||0,copy=$('.problem .narrative-copy');
+   // Center the copy and orbit inside section 2; the scanner is a separate sibling.
    problem.style.paddingTop='24px';problem.style.paddingBottom=`${bottom+24}px`;
    problem.style.minHeight=`${Math.max(artHeight*.9,copy.offsetHeight)+bottom+50}px`;
    problemTop=problem.offsetTop+1+(problem.offsetHeight-2-bottom-artHeight)/2;
  }else{
    const artHeight=stage.getBoundingClientRect().height;heroTop=hero.offsetHeight-artHeight-66;institutionStage.style.top=`${heroTop}px`;
    const copy=$('.problem .narrative-copy'),copyHeight=copy.offsetHeight,copyTop=copy.offsetTop;
-   const bottom=$('.problem-bottom').offsetHeight;
+   const bottom=problem.querySelector('.problem-bottom')?.offsetHeight||0;
    problem.style.minHeight=`${copyTop+copyHeight+artHeight+bottom+40}px`;problemTop=problem.offsetTop+copyTop+copyHeight+16;
  }
  stage.style.top=`${heroTop}px`;
@@ -141,7 +156,6 @@ function setup(){
      $('#flow-dollar-position').setAttribute('transform',`translate(${point.x} ${point.y})`);
      diagram.dataset.flowTime=t.toFixed(3);
      paths.forEach((path,i)=>path.style.markerEnd=t>=[3,5.2,7.8,11.8][i]?'url(#flow-arrow)':'none');
-     if(t>=9.4)showStepCopy('Closing proceeds return to your ShieldTX balance. Ready for the next trade.');
    },onRepeat(){
      tradeNumber++;diagram.dataset.trade=String(tradeNumber);$('.account-number').textContent=`ACCOUNT ${String(tradeNumber).padStart(2,'0')}`;
      gsap.to('.history-one',{opacity:.35,duration:.45,ease:'sine.inOut',overwrite:true});gsap.to('.history-two',{opacity:tradeNumber>2?.18:0,duration:.45,ease:'sine.inOut',overwrite:true});
@@ -221,11 +235,18 @@ function setup(){
  });
  ScrollTrigger.refresh();
 }
-$$('.flow-step').forEach(button=>button.addEventListener('click',()=>{const n=Number(button.dataset.step),time=STEP_TIMES[n];if(!firstTradeComplete&&solutionTrigger){window.scrollTo({top:solutionTrigger.start+(solutionTrigger.end-solutionTrigger.start)*time/TRADE_END,behavior:reduced()?'instant':'smooth'});}else{
- setFlowPlaying(false);
- if(reduced()){flowTimeline.time(time);return;}
- flowSeek=flowTimeline.tweenTo(time,{duration:.65,ease:'sine.inOut',onComplete(){flowSeek=null;const r=$('.flow-diagram').getBoundingClientRect();if(r.bottom>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header'))+90&&r.top<innerHeight*.88)setFlowPlaying(true);}});
-}}));
+$$('.flow-step').forEach(button=>{
+ const n=Number(button.dataset.step);
+ button.setAttribute('aria-controls','step-copy');
+ button.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){hoveredStep=n;renderStepDetails();}});
+ button.addEventListener('pointerleave',()=>{hoveredStep=null;renderStepDetails();});
+ button.addEventListener('focus',()=>{focusedStep=n;renderStepDetails();});
+ button.addEventListener('blur',()=>{focusedStep=null;renderStepDetails();});
+ button.addEventListener('click',()=>{pinnedStep=pinnedStep===n?null:n;renderStepDetails();});
+});
+function followAnimation(){pinnedStep=hoveredStep=focusedStep=null;renderStepDetails();}
+$('.follow-flow').addEventListener('click',followAnimation);
+$('.flow-controls').addEventListener('keydown',event=>{if(event.key==='Escape')followAnimation();});
 // Reverse travel never retraces the first trade or retains its extra scroll runway.
 let reverseTouchY=0,previousScrollY=scrollY;
 const reverseAllowed=target=>!target?.closest('dialog,input,textarea,select,[contenteditable="true"]');

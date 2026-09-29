@@ -1,0 +1,11 @@
+/* Standalone exposure scanner; original blue-and-white palette. */
+.problem-bottom.scanner-standalone{position:relative;inset:auto;display:flex;align-items:center;justify-content:space-between;min-height:0;width:auto;margin-top:var(--section-gap);padding:34px var(--gutter);border:1px solid var(--line)}
+.scanner-standalone .scanner-copy h2{font:400 clamp(27px,2.7vw,39px)/1.15 'Times New Roman',Georgia,serif;letter-spacing:-.025em;margin:10px 0 8px}
+.scanner-standalone .scanner-copy p{font-size:14px;margin:0}
+@media(max-width:760px){
+.problem-bottom.scanner-standalone{flex-direction:column;align-items:stretch;padding:28px 22px;gap:22px}
+.scanner-standalone .scanner-copy h2{font-size:29px}
+}
+
+/* Match the fine blueprint grid used by the surrounding sections. */
+.problem-bottom.scanner-standalone{background-color:var(--blue);background-image:linear-gradient(#c3dfff0f 1px,transparent 1px),linear-gradient(90deg,#c3dfff0f 1px,transparent 1px),linear-gradient(#c3dfff04 1px,transparent 1px),linear-gradient(90deg,#c3dfff04 1px,transparent 1px);background-size:86px 86px,86px 86px,21.5px 21.5px,21.5px 21.5px;background-position:0 0}
