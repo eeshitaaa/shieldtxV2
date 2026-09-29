@@ -153,7 +153,6 @@ function renderView(v,time=0){
   v.host.dataset.rotation=v.orb.rotation.y.toFixed(3);
   v.halo.position.copy(v.orb.position);v.halo.quaternion.copy(v.camera.quaternion);v.halo.material.uniforms.strength.value=.3;
   const q=v.orb.position.clone().project(v.camera),x=(q.x*.5+.5),y=(-q.y*.5+.5);
-  v.host.parentElement.style.setProperty('--coin-label-offset',`${v.host.clientWidth*.50/(v.camera.right-v.camera.left)+12}px`);
   const stage=v.host.parentElement;stage.style.setProperty('--orbit-opacity',String(p>=.999?.18:0));stage.style.setProperty('--orb-x',`${x*100}%`);stage.style.setProperty('--orb-y',`${y*100}%`);stage.dataset.institution=fade>.001?'visible':'faded';stage.dataset.orb=p>=.999?'arrived':'travelling';stage.style.setProperty('--transit-clearance',String(clamp(p/.07)*clamp((1-p)/.07)));
   rays(v,time,x*600,y*600);
  }

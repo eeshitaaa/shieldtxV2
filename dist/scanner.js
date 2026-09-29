@@ -8,7 +8,7 @@
   const scannerUrl = address => `https://scanner.shieldtx.xyz/${valid(address) ? '#scan/' + encodeURIComponent(address.toLowerCase()) : ''}`;
   const text = (id, value) => { $(id).textContent = value; };
   const finite = value => typeof value === 'number' && Number.isFinite(value);
-  const compact = value => finite(value) ? new Intl.NumberFormat('en-US', {notation:'compact', maximumFractionDigits:1}).format(value) : '–';
+  const compact = value => finite(value) ? new Intl.NumberFormat('en-US', {notation:'compact', maximumFractionDigits:1}).format(value) : '—';
   const coverageLabel = (value, fallback = 'Unavailable') => ({ready:'Available', complete:'Available', active:'Available', partial:'Partial preview', stale:'Latest available', not_in_dataset:'Not in dataset', unknown:'Unknown'}[value] || fallback);
 
   function resetRequest() {
@@ -39,7 +39,7 @@
     const visibilityTone = severity(score, 40), pressureTone = severity(pressure, 30);
     for (const id of ['#scan-exposure-label','#scan-visibility','#scan-visibility-note','#scan-visibility-meter']) tone(id, visibilityTone);
     for (const id of ['#scan-pressure','#scan-pressure-note','#scan-pressure-meter']) tone(id, pressureTone);
-    text('#scan-visibility', score ?? '–'); text('#scan-pressure', pressure ?? '–');
+    text('#scan-visibility', score ?? '—'); text('#scan-pressure', pressure ?? '—');
     $('#scan-visibility-meter').style.width = `${Math.max(0, Math.min(100, score ?? 0))}%`;
     $('#scan-pressure-meter').style.width = `${Math.max(0, Math.min(100, pressure ?? 0))}%`;
     text('#scan-visibility-note', score === null ? 'Visibility data is unavailable for this address.' : score > 70 ? 'High visibility to public wallet trackers.' : score > 40 ? 'A measurable public trading footprint.' : 'Lower visibility; activity is still public.');

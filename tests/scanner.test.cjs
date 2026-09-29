@@ -37,7 +37,7 @@ test('sample fallback is clearly dated and never applied to another wallet',asyn
 });
 test('a missing wallet is not described as private or assigned the sample scores',async()=>{
  const t=setup(async()=>response({ok:true,address:other,state:'not_in_dataset',coverage:{scan:'not_in_dataset'}}));
- await t.submit(other);assert.equal(t.$('#scan-visibility').textContent,'–');assert.equal(t.$('#scan-copiers').textContent,'–');
+ await t.submit(other);assert.equal(t.$('#scan-visibility').textContent,'—');assert.equal(t.$('#scan-copiers').textContent,'—');
  assert.match(t.$('#scan-data-note').textContent,/does not mean/);
 });
 test('editing an address cancels an older response and clears its results',async()=>{
